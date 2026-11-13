@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "task_id": "e2e-smoke-001",
+  "substantial": true,
+  "classification": "public",
+  "title": "Validate isolated Obsidian capture smoke",
+  "source": {
+    "session_id": "fixture-smoke-session",
+    "message_id": 1,
+    "started_at": "2026-09-07T03:40:00Z",
+    "completed_at": "2026-09-07T03:41:00Z",
+    "summary": "Exercise deterministic graph writes in an isolated safe temporary vault."
+  },
+  "decisions": [{"decision": "Use an isolated vault", "rationale": "Prevent test writes to the live knowledge graph"}],
+  "artifacts": [{"path": "evidence/smoke-vault", "description": "Preserved isolated E2E vault"}],
+  "result": "The isolated pipeline writes a linked graph and receipt deterministically.",
+  "reusable_lesson": "Run both first-write and identical no-op checks before enabling a live capture.",
+  "entities": [{"name": "Hermes Agent", "kind": "system"}, {"name": "Obsidian", "kind": "system"}],
+  "verification": {"status": "passed", "method": "Isolated CLI smoke", "evidence": "Dry-run, first capture, and identical replay are executed in sequence."}
+}

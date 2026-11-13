@@ -1,0 +1,34 @@
+flowchart TD
+    REQ["Request, repo, base revision"] --> ROUTE["Route: task type T, effort E, flags → cell"]
+    ROUTE -->|"+E"| EVID["Evidence bundle: F tier with search grounding"]
+    ROUTE -->|"+P"| REPRO["Reproduce first: tier by E"]
+    ROUTE -->|"no modifier"| CTR
+    EVID --> CTR
+    REPRO --> CTR
+    CTR{"+G?"} -->|yes| PCON["Premium contract: decision, interfaces, invariants, acceptance tests, rollback"]
+    CTR -->|no| CON["Contract: tier by E"]
+    PCON --> DEC
+    CON --> DEC
+    DEC{"R4?"} -->|yes| SPLIT["Decompose into N items: rules D1 to D6"]
+    DEC -->|no| ITEM
+    SPLIT --> ITEM["Bounded item subgraph, N in parallel on disjoint files"]
+    ITEM --> INT["Integrate in dependency order; rerun checks on the result"]
+    INT --> VER{"Recipe and required checks pass on the exact revision?"}
+    VER -->|no| FC["Classify failure: F1 to F5"]
+    FC -->|"F1 environment"| ITEM
+    FC -->|"F2 contract defect"| CON
+    FC -->|"F3, attempts remain"| ITEM
+    FC -->|"F3 twice"| PRE["Premium replan, once per milestone"]
+    PRE --> ITEM
+    FC -->|"F4 collision"| SPLIT
+    FC -->|"F5 or limit reached"| STOP["Checkpoint; report blocker with evidence"]
+    VER -->|yes| GP{"+G?"}
+    GP -->|yes| PACC["Premium acceptance, fresh session: accept, revise or blocked"]
+    PACC -->|revise| FC
+    PACC -->|blocked| STOP
+    PACC -->|accept| GH
+    GP -->|no| GH{"+H?"}
+    GH -->|yes| HUM["Human interrupt: approve exact revision and action"]
+    HUM -->|approve| DEL
+    HUM -->|reject| STOP
+    GH -->|no| DEL["Deliver; reconcile ledger; record outcomes"]

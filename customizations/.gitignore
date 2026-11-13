@@ -1,0 +1,11 @@
+# never commit local state
+.env
+.env.*
+auth.json
+secrets/
+*.pem
+*.key
+.pytest_cache/
+__pycache__/
+*.pyc
+.DS_Store

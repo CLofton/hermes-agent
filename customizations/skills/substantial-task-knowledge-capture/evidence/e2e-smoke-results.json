@@ -1,0 +1,93 @@
+{
+  "results": [
+    {
+      "exit_code": 0,
+      "output": {
+        "capture_id": "e2e-smoke-001-edf375d226ba",
+        "files": {
+          "Compiled Knowledge/concepts/task-captures/validate-isolated-obsidian-capture-smoke-edf375d226ba.md": "7a1ec9b9ddb175dcfdbb7645b29bbaccb4844e47386412df90815288d74e387f",
+          "Compiled Knowledge/entities/capture-references/e2e-smoke-001-edf375d226ba-hermes-agent.md": "c580b8fdd41d59c891b1063fc4325a7616735c67f4978a56f98afc7631698b0e",
+          "Compiled Knowledge/entities/capture-references/e2e-smoke-001-edf375d226ba-obsidian.md": "d9b5f1ddf34c8e51e8b6b7e2732502f2e46849fccb18033439e518f3c3d2de7f",
+          "Compiled Knowledge/output/task-capture-receipts/2026-09-07-e2e-smoke-001-edf375d226ba.md": "3c6902855ffdccde1673d59ec85f4feca21f440a8f135cadc8ca7fa6ae3972f3",
+          "Compiled Knowledge/raw/tasks/2026/2026-09-07/e2e-smoke-001-edf375d226ba.md": "0460c232d869df85fe1d9a1945c714cc4a5ffa4e21c5777f763063cdf3e6e954"
+        },
+        "manifest_sha256": "0bbb191a4d65710079aca9ba618d3ebd86c2d07d2a52f78fa71ea1c341b50ec7",
+        "receipt": "Compiled Knowledge/output/task-capture-receipts/2026-09-07-e2e-smoke-001-edf375d226ba.md",
+        "redactions": {},
+        "signals": [
+          "decision",
+          "artifact",
+          "material-result",
+          "reusable-lesson",
+          "linked-entity",
+          "verified"
+        ],
+        "status": "planned",
+        "writes": 0
+      },
+      "stderr": "",
+      "step": "dry-run"
+    },
+    {
+      "exit_code": 0,
+      "output": {
+        "capture_id": "e2e-smoke-001-edf375d226ba",
+        "files": {
+          "Compiled Knowledge/concepts/task-captures/validate-isolated-obsidian-capture-smoke-edf375d226ba.md": "7a1ec9b9ddb175dcfdbb7645b29bbaccb4844e47386412df90815288d74e387f",
+          "Compiled Knowledge/entities/capture-references/e2e-smoke-001-edf375d226ba-hermes-agent.md": "c580b8fdd41d59c891b1063fc4325a7616735c67f4978a56f98afc7631698b0e",
+          "Compiled Knowledge/entities/capture-references/e2e-smoke-001-edf375d226ba-obsidian.md": "d9b5f1ddf34c8e51e8b6b7e2732502f2e46849fccb18033439e518f3c3d2de7f",
+          "Compiled Knowledge/output/task-capture-receipts/2026-09-07-e2e-smoke-001-edf375d226ba.md": "3c6902855ffdccde1673d59ec85f4feca21f440a8f135cadc8ca7fa6ae3972f3",
+          "Compiled Knowledge/raw/tasks/2026/2026-09-07/e2e-smoke-001-edf375d226ba.md": "0460c232d869df85fe1d9a1945c714cc4a5ffa4e21c5777f763063cdf3e6e954"
+        },
+        "manifest_sha256": "0bbb191a4d65710079aca9ba618d3ebd86c2d07d2a52f78fa71ea1c341b50ec7",
+        "receipt": "Compiled Knowledge/output/task-capture-receipts/2026-09-07-e2e-smoke-001-edf375d226ba.md",
+        "redactions": {},
+        "signals": [
+          "decision",
+          "artifact",
+          "material-result",
+          "reusable-lesson",
+          "linked-entity",
+          "verified"
+        ],
+        "state": "/Users/operator/.hermes/skills/productivity/substantial-task-knowledge-capture/evidence/smoke-state.json",
+        "status": "captured",
+        "writes": 5
+      },
+      "stderr": "",
+      "step": "first-capture"
+    },
+    {
+      "exit_code": 0,
+      "output": {
+        "capture_id": "e2e-smoke-001-edf375d226ba",
+        "files": {
+          "Compiled Knowledge/concepts/task-captures/validate-isolated-obsidian-capture-smoke-edf375d226ba.md": "7a1ec9b9ddb175dcfdbb7645b29bbaccb4844e47386412df90815288d74e387f",
+          "Compiled Knowledge/entities/capture-references/e2e-smoke-001-edf375d226ba-hermes-agent.md": "c580b8fdd41d59c891b1063fc4325a7616735c67f4978a56f98afc7631698b0e",
+          "Compiled Knowledge/entities/capture-references/e2e-smoke-001-edf375d226ba-obsidian.md": "d9b5f1ddf34c8e51e8b6b7e2732502f2e46849fccb18033439e518f3c3d2de7f",
+          "Compiled Knowledge/output/task-capture-receipts/2026-09-07-e2e-smoke-001-edf375d226ba.md": "3c6902855ffdccde1673d59ec85f4feca21f440a8f135cadc8ca7fa6ae3972f3",
+          "Compiled Knowledge/raw/tasks/2026/2026-09-07/e2e-smoke-001-edf375d226ba.md": "0460c232d869df85fe1d9a1945c714cc4a5ffa4e21c5777f763063cdf3e6e954"
+        },
+        "manifest_sha256": "0bbb191a4d65710079aca9ba618d3ebd86c2d07d2a52f78fa71ea1c341b50ec7",
+        "receipt": "Compiled Knowledge/output/task-capture-receipts/2026-09-07-e2e-smoke-001-edf375d226ba.md",
+        "redactions": {},
+        "signals": [
+          "decision",
+          "artifact",
+          "material-result",
+          "reusable-lesson",
+          "linked-entity",
+          "verified"
+        ],
+        "state": "/Users/operator/.hermes/skills/productivity/substantial-task-knowledge-capture/evidence/smoke-state.json",
+        "status": "already_present",
+        "writes": 0
+      },
+      "stderr": "",
+      "step": "idempotent-replay"
+    }
+  ],
+  "state": "/Users/operator/.hermes/skills/productivity/substantial-task-knowledge-capture/evidence/smoke-state.json",
+  "suite": "isolated-e2e-smoke",
+  "vault": "/Users/operator/.hermes/skills/productivity/substantial-task-knowledge-capture/evidence/smoke-vault"
+}
