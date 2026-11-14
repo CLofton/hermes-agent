@@ -1,0 +1,634 @@
+{
+  "policy_version": "2.2.3",
+  "task_id": "task_9f2",
+  "attempt": 1,
+  "planned_at": "2026-09-08",
+  "status": "planned",
+  "mode": {
+    "selected": "easy",
+    "derived": "medium",
+    "effective": "medium",
+    "raise_reason": "medium rigor required by task type T8 / effort E2 / flags ['external-writes', 'payments', 'prod']; user mode easy raised (floor, not ceiling)",
+    "rank": 1,
+    "coordination_model": "gpt-5.6-sol",
+    "coordination_dispatch": {
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high"
+    },
+    "premium_judge": "gpt-6-astra",
+    "substitutions": [],
+    "effort_raises": [],
+    "note": "mode is a rigor level (spec \u00a70): it may only raise rigor, never remove a mandatory recipe, gate or verification. Model selection is decoupled from the mode."
+  },
+  "route": {
+    "task_type": "T8",
+    "type_source": "path",
+    "path_derived_type": "T8",
+    "effort": "E2",
+    "flags": [
+      "external-writes",
+      "payments",
+      "prod"
+    ],
+    "rationale": [
+      "path **/webhooks/** -> T8 ['external-writes']",
+      "path **/integrations/** -> T8 ['external-writes']",
+      "path **/hubspot/** -> T8 ['external-writes']",
+      "path **/stripe/** -> T8 ['external-writes', 'payments']",
+      "keyword ['webhook', 'n8n', 'cron', 'sync job', 'integration'] -> T8",
+      "E2: several files, interface change, or independent test design needed",
+      "stage 3: agrees; payments flag makes the premium gate mandatory"
+    ],
+    "inconclusive": false,
+    "stage": "3",
+    "stage3_required": false,
+    "cell": "R2+EGH",
+    "matrix_cell": "R2+EH",
+    "family": "R2",
+    "modifiers": "EGH",
+    "reroute_history": []
+  },
+  "budget": {
+    "effort": "E2",
+    "implementation_ceiling_usd": 8.0,
+    "verification_recovery_reservation_usd": 2.8,
+    "gate_reserve_usd": 3.0,
+    "evidence_estimate_usd": 0.075,
+    "planned_total_usd": 11.075,
+    "effective_limit_usd": 25.0,
+    "within_limit": true,
+    "next_call_upper_bound_usd": 0.075,
+    "predispatch_check": "spent + in_flight_reservations + next_call_upper_bound <= effective_limit",
+    "predispatch_check_ok": true,
+    "spending_authority": "none granted by this planner; the user's existing limits always win"
+  },
+  "time": {
+    "critical_path_min": 137,
+    "critical_path": [
+      "task_9f2:1:ROUTE",
+      "task_9f2:1:EVID",
+      "task_9f2:1:PCON",
+      "task_9f2:1:IM",
+      "task_9f2:1:RV",
+      "task_9f2:1:CK",
+      "task_9f2:1:INT",
+      "task_9f2:1:VER",
+      "task_9f2:1:PACC",
+      "task_9f2:1:HUM",
+      "task_9f2:1:DEL"
+    ],
+    "planning_min": 31,
+    "implementation_min": 91,
+    "gate_min": 15,
+    "time_ceiling_min": 120,
+    "ceiling_applies_to": "implementation path (test design, implement, review, checks, integrate, verify)",
+    "note": "planning time (evidence, reproduction, contract) and gate time (premium sessions, human waits) are tracked outside the item's ceiling, as the gate reserve sits outside the money ceiling; reproduction has its own ceiling of the same size"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "task_9f2:1:ROUTE",
+        "node": "ROUTE",
+        "tier": null,
+        "model": null,
+        "provider": null,
+        "family": null,
+        "role": "controller",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 1,
+        "hermes_limits": null
+      },
+      {
+        "id": "task_9f2:1:EVID",
+        "node": "EVID",
+        "tier": "F",
+        "model": "gemini-3.8-flash",
+        "provider": "google",
+        "family": "gemini",
+        "role": "evidence",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 10,
+        "hermes_limits": {
+          "iterations": 50,
+          "child_timeout_seconds": 7200
+        }
+      },
+      {
+        "id": "task_9f2:1:PCON",
+        "node": "PCON",
+        "tier": "P",
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "family": "gpt",
+        "role": "premium_contract",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 20,
+        "hermes_limits": {
+          "iterations": 50,
+          "child_timeout_seconds": 7200
+        },
+        "fresh_session": false
+      },
+      {
+        "id": "task_9f2:1:IM",
+        "node": "IM",
+        "tier": "M",
+        "model": "glm-5.3",
+        "provider": "zai",
+        "family": "glm",
+        "role": "implement",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 45,
+        "hermes_limits": {
+          "iterations": 50,
+          "child_timeout_seconds": 7200
+        },
+        "owned_files": null,
+        "name": "Handle the payment_intent.succeeded webhook and post the payment to the enrollment deal"
+      },
+      {
+        "id": "task_9f2:1:TD",
+        "node": "TD",
+        "tier": "F",
+        "model": "glm-5.3-flash",
+        "provider": "zai",
+        "family": "glm",
+        "role": "test_design",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 20,
+        "hermes_limits": {
+          "iterations": 50,
+          "child_timeout_seconds": 7200
+        }
+      },
+      {
+        "id": "task_9f2:1:RV",
+        "node": "RV",
+        "tier": "M",
+        "model": "qwen3.8-27b",
+        "provider": "openrouter",
+        "family": "qwen",
+        "role": "review",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 15,
+        "hermes_limits": {
+          "iterations": 50,
+          "child_timeout_seconds": 7200
+        },
+        "reviews": "glm-5.3"
+      },
+      {
+        "id": "task_9f2:1:CK",
+        "node": "CK",
+        "tier": null,
+        "model": null,
+        "provider": null,
+        "family": null,
+        "role": "controller",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 10,
+        "hermes_limits": null
+      },
+      {
+        "id": "task_9f2:1:INT",
+        "node": "INT",
+        "tier": null,
+        "model": null,
+        "provider": null,
+        "family": null,
+        "role": "controller",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 5,
+        "hermes_limits": null
+      },
+      {
+        "id": "task_9f2:1:VER",
+        "node": "VER",
+        "tier": null,
+        "model": null,
+        "provider": null,
+        "family": null,
+        "role": "controller",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 15,
+        "hermes_limits": null,
+        "eval_replay": false,
+        "recipe": [
+          "fixture-payload replay in a sandbox or test account",
+          "idempotency proven: same event twice -> one effect",
+          "retry and rate-limit behavior tested",
+          "external API contract pinned with primary documentation link and retrieval date",
+          "+H before enabling live external writes",
+          "secrets only via environment or broker"
+        ]
+      },
+      {
+        "id": "task_9f2:1:PACC",
+        "node": "PACC",
+        "tier": "P",
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "family": "gpt",
+        "role": "premium_acceptance",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 15,
+        "hermes_limits": {
+          "iterations": 50,
+          "child_timeout_seconds": 7200
+        },
+        "fresh_session": true
+      },
+      {
+        "id": "task_9f2:1:HUM",
+        "node": "HUM",
+        "tier": "human",
+        "model": null,
+        "provider": null,
+        "family": null,
+        "role": "human_interrupt",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 0,
+        "hermes_limits": null
+      },
+      {
+        "id": "task_9f2:1:DEL",
+        "node": "DEL",
+        "tier": null,
+        "model": null,
+        "provider": null,
+        "family": null,
+        "role": "controller",
+        "effort": "E2",
+        "item": null,
+        "duration_min": 1,
+        "hermes_limits": null
+      }
+    ],
+    "edges": [
+      [
+        "task_9f2:1:ROUTE",
+        "task_9f2:1:EVID"
+      ],
+      [
+        "task_9f2:1:EVID",
+        "task_9f2:1:PCON"
+      ],
+      [
+        "task_9f2:1:PCON",
+        "task_9f2:1:IM"
+      ],
+      [
+        "task_9f2:1:PCON",
+        "task_9f2:1:TD"
+      ],
+      [
+        "task_9f2:1:IM",
+        "task_9f2:1:RV"
+      ],
+      [
+        "task_9f2:1:TD",
+        "task_9f2:1:RV"
+      ],
+      [
+        "task_9f2:1:RV",
+        "task_9f2:1:CK"
+      ],
+      [
+        "task_9f2:1:CK",
+        "task_9f2:1:INT"
+      ],
+      [
+        "task_9f2:1:INT",
+        "task_9f2:1:VER"
+      ],
+      [
+        "task_9f2:1:VER",
+        "task_9f2:1:PACC"
+      ],
+      [
+        "task_9f2:1:PACC",
+        "task_9f2:1:HUM"
+      ],
+      [
+        "task_9f2:1:HUM",
+        "task_9f2:1:DEL"
+      ]
+    ],
+    "items": 1
+  },
+  "dispatch_order": [
+    "task_9f2:1:ROUTE",
+    "task_9f2:1:EVID",
+    "task_9f2:1:PCON",
+    "task_9f2:1:IM",
+    "task_9f2:1:TD",
+    "task_9f2:1:RV",
+    "task_9f2:1:CK",
+    "task_9f2:1:INT",
+    "task_9f2:1:VER",
+    "task_9f2:1:PACC",
+    "task_9f2:1:HUM",
+    "task_9f2:1:DEL"
+  ],
+  "remaining_path_min": {
+    "task_9f2:1:DEL": 1,
+    "task_9f2:1:HUM": 1,
+    "task_9f2:1:PACC": 16,
+    "task_9f2:1:VER": 31,
+    "task_9f2:1:INT": 36,
+    "task_9f2:1:CK": 46,
+    "task_9f2:1:RV": 61,
+    "task_9f2:1:TD": 81,
+    "task_9f2:1:IM": 106,
+    "task_9f2:1:PCON": 126,
+    "task_9f2:1:EVID": 136,
+    "task_9f2:1:ROUTE": 137
+  },
+  "hermes_cards": [
+    {
+      "node_id": "task_9f2:1:EVID",
+      "title": "EVID evidence for task_9f2",
+      "assignee": "eng-flash",
+      "model": "gemini-3.8-flash",
+      "provider": "google",
+      "family": "gemini",
+      "reasoning_effort": null,
+      "dispatch": {
+        "provider": "google",
+        "model": "gemini-3.8-flash"
+      },
+      "worker_argv": [
+        "hermes",
+        "-m",
+        "gemini-3.8-flash",
+        "--provider",
+        "google"
+      ],
+      "reasoning_binding": "assignee profile prior base effort with exact Sol namespace overrides",
+      "parents": [
+        "task_9f2:1:ROUTE"
+      ],
+      "idempotency_key": "task_9f2:1:EVID",
+      "child_timeout_seconds": 7200,
+      "iterations": 50,
+      "fresh_session": null,
+      "contract_delivery": ".hermes.md in the item worktree",
+      "cli": "hermes kanban create \"EVID evidence for task_9f2\" --assignee eng-flash --model gemini-3.8-flash --provider google --parent <id of task_9f2:1:ROUTE> --idempotency-key \"task_9f2:1:EVID\" --json"
+    },
+    {
+      "node_id": "task_9f2:1:PCON",
+      "title": "PCON premium_contract for task_9f2",
+      "assignee": "eng-judge",
+      "model": "gpt-6-astra",
+      "provider": "openai",
+      "family": "gpt",
+      "reasoning_effort": null,
+      "dispatch": {
+        "provider": "openai",
+        "model": "gpt-6-astra"
+      },
+      "worker_argv": [
+        "hermes",
+        "-m",
+        "gpt-6-astra",
+        "--provider",
+        "openai"
+      ],
+      "reasoning_binding": "assignee profile prior base effort with exact Sol namespace overrides",
+      "parents": [
+        "task_9f2:1:EVID"
+      ],
+      "idempotency_key": "task_9f2:1:PCON",
+      "child_timeout_seconds": 7200,
+      "iterations": 50,
+      "fresh_session": false,
+      "contract_delivery": ".hermes.md in the item worktree",
+      "cli": "hermes kanban create \"PCON premium_contract for task_9f2\" --assignee eng-judge --model gpt-6-astra --provider openai --parent <id of task_9f2:1:EVID> --idempotency-key \"task_9f2:1:PCON\" --json"
+    },
+    {
+      "node_id": "task_9f2:1:IM",
+      "title": "IM implement for task_9f2",
+      "assignee": "eng-mid",
+      "model": "glm-5.3",
+      "provider": "zai",
+      "family": "glm",
+      "reasoning_effort": null,
+      "dispatch": {
+        "provider": "zai",
+        "model": "glm-5.3"
+      },
+      "worker_argv": [
+        "hermes",
+        "-m",
+        "glm-5.3",
+        "--provider",
+        "zai"
+      ],
+      "reasoning_binding": "assignee profile prior base effort with exact Sol namespace overrides",
+      "parents": [
+        "task_9f2:1:PCON"
+      ],
+      "idempotency_key": "task_9f2:1:IM",
+      "child_timeout_seconds": 7200,
+      "iterations": 50,
+      "fresh_session": null,
+      "contract_delivery": ".hermes.md in the item worktree",
+      "cli": "hermes kanban create \"IM implement for task_9f2\" --assignee eng-mid --model glm-5.3 --provider zai --parent <id of task_9f2:1:PCON> --idempotency-key \"task_9f2:1:IM\" --json"
+    },
+    {
+      "node_id": "task_9f2:1:TD",
+      "title": "TD test_design for task_9f2",
+      "assignee": "eng-flash",
+      "model": "glm-5.3-flash",
+      "provider": "zai",
+      "family": "glm",
+      "reasoning_effort": null,
+      "dispatch": {
+        "provider": "zai",
+        "model": "glm-5.3-flash"
+      },
+      "worker_argv": [
+        "hermes",
+        "-m",
+        "glm-5.3-flash",
+        "--provider",
+        "zai"
+      ],
+      "reasoning_binding": "assignee profile prior base effort with exact Sol namespace overrides",
+      "parents": [
+        "task_9f2:1:PCON"
+      ],
+      "idempotency_key": "task_9f2:1:TD",
+      "child_timeout_seconds": 7200,
+      "iterations": 50,
+      "fresh_session": null,
+      "contract_delivery": ".hermes.md in the item worktree",
+      "cli": "hermes kanban create \"TD test_design for task_9f2\" --assignee eng-flash --model glm-5.3-flash --provider zai --parent <id of task_9f2:1:PCON> --idempotency-key \"task_9f2:1:TD\" --json"
+    },
+    {
+      "node_id": "task_9f2:1:RV",
+      "title": "RV review for task_9f2",
+      "assignee": "eng-reviewer",
+      "model": "qwen3.8-27b",
+      "provider": "openrouter",
+      "family": "qwen",
+      "reasoning_effort": null,
+      "dispatch": {
+        "provider": "openrouter",
+        "model": "qwen/qwen3.8-27b"
+      },
+      "worker_argv": [
+        "hermes",
+        "-m",
+        "qwen/qwen3.8-27b",
+        "--provider",
+        "openrouter"
+      ],
+      "reasoning_binding": "assignee profile prior base effort with exact Sol namespace overrides",
+      "parents": [
+        "task_9f2:1:IM",
+        "task_9f2:1:TD"
+      ],
+      "idempotency_key": "task_9f2:1:RV",
+      "child_timeout_seconds": 7200,
+      "iterations": 50,
+      "fresh_session": null,
+      "contract_delivery": ".hermes.md in the item worktree",
+      "cli": "hermes kanban create \"RV review for task_9f2\" --assignee eng-reviewer --model qwen/qwen3.8-27b --provider openrouter --parent <id of task_9f2:1:IM> --parent <id of task_9f2:1:TD> --idempotency-key \"task_9f2:1:RV\" --json"
+    },
+    {
+      "node_id": "task_9f2:1:PACC",
+      "title": "PACC premium_acceptance for task_9f2",
+      "assignee": "eng-judge",
+      "model": "gpt-6-astra",
+      "provider": "openai",
+      "family": "gpt",
+      "reasoning_effort": null,
+      "dispatch": {
+        "provider": "openai",
+        "model": "gpt-6-astra"
+      },
+      "worker_argv": [
+        "hermes",
+        "-m",
+        "gpt-6-astra",
+        "--provider",
+        "openai"
+      ],
+      "reasoning_binding": "assignee profile prior base effort with exact Sol namespace overrides",
+      "parents": [
+        "task_9f2:1:VER"
+      ],
+      "idempotency_key": "task_9f2:1:PACC",
+      "child_timeout_seconds": 7200,
+      "iterations": 50,
+      "fresh_session": true,
+      "contract_delivery": ".hermes.md in the item worktree",
+      "cli": "hermes kanban create \"PACC premium_acceptance for task_9f2\" --assignee eng-judge --model gpt-6-astra --provider openai --parent <id of task_9f2:1:VER> --idempotency-key \"task_9f2:1:PACC\" --json"
+    },
+    {
+      "node_id": "task_9f2:1:HUM",
+      "title": "HUM human_interrupt for task_9f2",
+      "assignee": "human",
+      "model": null,
+      "provider": null,
+      "parents": [
+        "task_9f2:1:PACC"
+      ],
+      "idempotency_key": "task_9f2:1:HUM",
+      "presents": [
+        "contract",
+        "diff summary with anchors",
+        "verdicts and check evidence",
+        "exact revision",
+        "exact action",
+        "rollback path"
+      ],
+      "decision": [
+        "approve",
+        "reject"
+      ],
+      "scope": "exact revision and exact action"
+    }
+  ],
+  "controller_steps": [
+    {
+      "node_id": "task_9f2:1:ROUTE",
+      "node": "ROUTE",
+      "parents": [],
+      "recipe": null,
+      "eval_replay": null
+    },
+    {
+      "node_id": "task_9f2:1:CK",
+      "node": "CK",
+      "parents": [
+        "task_9f2:1:RV"
+      ],
+      "recipe": null,
+      "eval_replay": null
+    },
+    {
+      "node_id": "task_9f2:1:INT",
+      "node": "INT",
+      "parents": [
+        "task_9f2:1:CK"
+      ],
+      "recipe": null,
+      "eval_replay": null
+    },
+    {
+      "node_id": "task_9f2:1:VER",
+      "node": "VER",
+      "parents": [
+        "task_9f2:1:INT"
+      ],
+      "recipe": [
+        "fixture-payload replay in a sandbox or test account",
+        "idempotency proven: same event twice -> one effect",
+        "retry and rate-limit behavior tested",
+        "external API contract pinned with primary documentation link and retrieval date",
+        "+H before enabling live external writes",
+        "secrets only via environment or broker"
+      ],
+      "eval_replay": false
+    },
+    {
+      "node_id": "task_9f2:1:DEL",
+      "node": "DEL",
+      "parents": [
+        "task_9f2:1:HUM"
+      ],
+      "recipe": null,
+      "eval_replay": null
+    }
+  ],
+  "recipe": [
+    "fixture-payload replay in a sandbox or test account",
+    "idempotency proven: same event twice -> one effect",
+    "retry and rate-limit behavior tested",
+    "external API contract pinned with primary documentation link and retrieval date",
+    "+H before enabling live external writes",
+    "secrets only via environment or broker"
+  ],
+  "gates": {
+    "premium_contract": true,
+    "premium_acceptance": true,
+    "human_interrupt": true,
+    "eval_replay": false
+  },
+  "warnings": [],
+  "disclaimer": "Offline plan. No API calls, provider accounts or Hermes tasks were created. Spending authority comes only from the user's existing limits."
+}

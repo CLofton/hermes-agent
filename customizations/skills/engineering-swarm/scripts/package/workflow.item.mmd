@@ -1,0 +1,10 @@
+flowchart LR
+    C["Item contract, inherited from parent"] --> TD["Test design: independent tier, sees the contract only"]
+    C --> IM["Implement: tier by E, attempt n, owned files only"]
+    TD --> RV
+    IM --> RV["Review: actual diff and source, different model family"]
+    RV --> CK["Run recipe and required checks on the candidate"]
+    CK -->|pass| ACC["Item accepted: revision hash recorded"]
+    CK -->|fail| FCI["Classify failure"]
+    FCI -->|"F3: escalate implementer one tier"| IM
+    FCI -->|"F2"| C

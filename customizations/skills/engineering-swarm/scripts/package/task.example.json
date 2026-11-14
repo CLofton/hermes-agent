@@ -1,0 +1,38 @@
+{
+  "task_id": "task_9f2",
+  "title": "Handle the payment_intent.succeeded webhook and post the payment to the enrollment deal",
+  "description": "Add signature verification and idempotent processing for the payments webhook handler, write the payment to the HubSpot deal, and retry on 5xx from HubSpot. Fixture events exist in the test account.",
+  "repo": "internal-recruiter",
+  "base_revision": "a1b2c3d",
+  "environment": "production",
+  "files": [
+    "src/webhooks/stripe/handler.ts",
+    "src/integrations/hubspot/deals.ts",
+    "src/webhooks/stripe/handler.test.ts"
+  ],
+  "signals": {
+    "has_reproduction": false,
+    "changes_public_interface": true,
+    "has_tests": true,
+    "estimated_changed_lines": 180,
+    "cross_module": false,
+    "concurrency": false,
+    "new_design_needed": false,
+    "mechanical": false,
+    "local_available": true
+  },
+  "requester_flags": [],
+  "effort_hint": null,
+  "limits": {
+    "task_ceiling_usd": 25,
+    "project_remaining_usd": 400,
+    "daily_remaining_usd": 120,
+    "spent_usd": 0,
+    "in_flight_reservations_usd": 0
+  },
+  "opinions": {
+    "_note": "Offline stand-ins for stage 2 (local classifier) and stage 3 (coordination model). A live controller fills these from the models.",
+    "stage2": {"task_type": "T8", "effort": "E2", "rationale": "webhook handler plus HubSpot write; several files; interface change"},
+    "stage3": {"task_type": "T8", "effort": "E2", "rationale": "agrees; payments flag makes the premium gate mandatory"}
+  }
+}

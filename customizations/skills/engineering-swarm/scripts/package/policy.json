@@ -1,0 +1,2598 @@
+{
+  "policy_version": "2.2.3",
+  "changelog": [
+    "2.2.3 (2026-10-31): T14 staging: MAIN/H conductor gpt-5.6-sol, ChatGPT subscription provider openai-codex, reasoning high. Preserve v2.2.2 Grok worker updates and all worker/review/premium/budget rules; retire Terra as an active coordination route. No live inference performed.",
+    "2.2.2 (2026-10-16): Upgrade F/M worker candidates to grok-4.6; remove the duplicate F optional candidate and obsolete grok-4.20 registry row. Record successful OpenRouter and direct xAI one-shot checks and OpenRouter metadata/pricing; direct xAI pricing remains unverified. Document Jev advisory judgment nodes under authoritative deterministic routing and code gates.",
+    "2.2.1 (2026-10-10): the operator directive — gpt-5.6-sol is the main model and conductor (H tier coordination role moved from gpt-5.6-terra to gpt-5.6-sol). Worker roster skewed to qwen3.8-27b, glm-5.3 and latest grok (grok-4.20, added to registry, unverified pricing) across F and M tiers.",
+    "2.2.0: Pool/roster availability modes removed (user decision, 2026-09-08)."
+  ],
+  "source_spec": "SPEC.md",
+  "_note": "Custom policy schema for the Hermes engineering swarm v2. This is NOT Hermes configuration; do not paste into ~/.hermes. Every dollar and minute value is a configurable starting value, not a price estimate or spending authorization. Fields named _confirm must be checked against the provider's current API reference before a smoke run.",
+  "effort_levels": {
+    "E0": {
+      "name": "Trivial",
+      "description": "Mechanical, deterministic, one file, minutes.",
+      "implementer_tier": "L",
+      "implementer_alt_tier": "F",
+      "test_design": "existing_checks",
+      "test_design_tier": null,
+      "reviewer_tier": null,
+      "ceiling_usd": 0.5,
+      "gate_reserve_usd": 1.5,
+      "time_ceiling_min": 10,
+      "attempts_before_escalation": 1,
+      "escalate_to": "E1",
+      "hard_stop_attempts": 2,
+      "width_cap": 1,
+      "hermes": {
+        "iterations": 15,
+        "child_timeout_seconds": 600
+      }
+    },
+    "E1": {
+      "name": "Small",
+      "description": "One module, reproducible, roughly under 50 changed lines, under an hour.",
+      "implementer_tier": "F",
+      "implementer_alt_tier": "L",
+      "implementer_alt_condition": "local idle and item serial",
+      "test_design": "implementer",
+      "test_design_tier": null,
+      "reviewer_tier": "F",
+      "ceiling_usd": 2.0,
+      "gate_reserve_usd": 1.5,
+      "time_ceiling_min": 30,
+      "attempts_before_escalation": 1,
+      "escalate_to": "E2",
+      "hard_stop_attempts": 2,
+      "width_cap": 1,
+      "hermes": {
+        "iterations": 30,
+        "child_timeout_seconds": 1800
+      }
+    },
+    "E2": {
+      "name": "Medium",
+      "description": "Several files, needs independent test design, up to a day.",
+      "implementer_tier": "M",
+      "implementer_alt_tier": null,
+      "test_design": "independent_parallel",
+      "test_design_tier": "F",
+      "reviewer_tier": "M",
+      "ceiling_usd": 8.0,
+      "gate_reserve_usd": 3.0,
+      "time_ceiling_min": 120,
+      "attempts_before_escalation": 1,
+      "escalate_to": "E3",
+      "hard_stop_attempts": 3,
+      "width_cap": 4,
+      "hermes": {
+        "iterations": 50,
+        "child_timeout_seconds": 7200
+      }
+    },
+    "E3": {
+      "name": "Large",
+      "description": "Cross-module or cross-service, concurrency, debugging without a clear cause, multi-day.",
+      "implementer_tier": "H",
+      "implementer_alt_tier": null,
+      "test_design": "independent_parallel",
+      "test_design_tier": "M",
+      "reviewer_tier": "H",
+      "ceiling_usd": 25.0,
+      "gate_reserve_usd": 6.0,
+      "time_ceiling_min": 360,
+      "attempts_before_escalation": 2,
+      "escalate_to": "PRE",
+      "hard_stop_attempts": 3,
+      "width_cap": 4,
+      "hermes": {
+        "iterations": 80,
+        "child_timeout_seconds": 21600
+      }
+    },
+    "E4": {
+      "name": "Foundational",
+      "description": "Architecture, novel design, major ambiguity; must be decomposed before implementation.",
+      "implementer_tier": "P",
+      "implementer_role": "plan_only",
+      "implementer_alt_tier": null,
+      "test_design": "per_item",
+      "test_design_tier": null,
+      "reviewer_tier": "H",
+      "ceiling_usd": 75.0,
+      "ceiling_scope": "plan; items carry their own ceilings; a separate project ceiling applies",
+      "gate_reserve_usd": 0.0,
+      "gate_included_in_ceiling": true,
+      "time_ceiling_min": null,
+      "plan_time_ceiling_min": 60,
+      "milestone_time_ceiling": "set_in_plan",
+      "attempts_before_escalation": null,
+      "replans_per_milestone": 1,
+      "hard_stop_attempts": 3,
+      "hard_stop_scope": "per item",
+      "width_cap": "disjoint_items",
+      "hermes": {
+        "iterations": 80,
+        "child_timeout_seconds": 3600,
+        "_scope": "plan node; items use their own effort level"
+      }
+    }
+  },
+  "effort_order": [
+    "E0",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+  ],
+  "effort_heuristics": {
+    "_note": "Stage-1 rules used by router.py. Signals come from the task JSON. Requester may raise effort, never lower it.",
+    "E4_triggers": [
+      "new_design_needed",
+      "major_ambiguity"
+    ],
+    "E3_triggers": [
+      "cross_module",
+      "concurrency"
+    ],
+    "E3_thresholds": {
+      "files_gt": 6,
+      "changed_lines_gt": 400
+    },
+    "E2_thresholds": {
+      "files_gt": 1,
+      "changed_lines_gt": 50,
+      "or_signals": [
+        "changes_public_interface",
+        "needs_test_design"
+      ]
+    },
+    "E1_thresholds": {
+      "changed_lines_gt": 10,
+      "or_signals": [
+        "has_logic_change"
+      ]
+    },
+    "E0_requires": [
+      "mechanical"
+    ]
+  },
+  "task_types": {
+    "T1": {
+      "name": "Mechanical edit",
+      "default_flags": [],
+      "modifiers": [],
+      "min_effort": "E0",
+      "recipe": "t1_mechanical",
+      "examples": [
+        "formatting",
+        "rename",
+        "typo",
+        "comment or doc change",
+        "config value",
+        "dependency patch bump with lockfile"
+      ]
+    },
+    "T2": {
+      "name": "Bug fix, reproducible",
+      "default_flags": [],
+      "modifiers": [],
+      "min_effort": "E0",
+      "recipe": "t2_bug_repro",
+      "examples": [
+        "failing test exists",
+        "wrong total on a report page",
+        "broken form validation"
+      ]
+    },
+    "T3": {
+      "name": "Bug fix, no reproduction",
+      "default_flags": [],
+      "modifiers": [
+        "P"
+      ],
+      "min_effort": "E1",
+      "recipe": "t3_bug_no_repro",
+      "examples": [
+        "sometimes fails in prod",
+        "intermittent webhook drop",
+        "sync job skips rows"
+      ]
+    },
+    "T4": {
+      "name": "Tests & fixtures",
+      "default_flags": [],
+      "modifiers": [],
+      "min_effort": "E0",
+      "recipe": "t4_tests",
+      "examples": [
+        "add coverage",
+        "repair flaky tests",
+        "fixtures for the recruiter pipeline app"
+      ]
+    },
+    "T5": {
+      "name": "Feature: backend, API, service",
+      "default_flags": [],
+      "modifiers": [],
+      "min_effort": "E0",
+      "recipe": "t5_backend",
+      "examples": [
+        "new endpoint",
+        "job",
+        "report query",
+        "HubSpot property sync logic"
+      ]
+    },
+    "T6": {
+      "name": "Feature: frontend, UI",
+      "default_flags": [],
+      "modifiers": [],
+      "min_effort": "E0",
+      "recipe": "t6_frontend",
+      "examples": [
+        "Next.js page or component",
+        "job-finder UI",
+        "form flow"
+      ]
+    },
+    "T7": {
+      "name": "Data & schema",
+      "default_flags": [
+        "critical",
+        "destructive"
+      ],
+      "modifiers": [
+        "G",
+        "H"
+      ],
+      "min_effort": "E0",
+      "recipe": "t7_data_schema",
+      "examples": [
+        "Postgres migration on Railway",
+        "seed script",
+        "HubSpot property backfill",
+        "bulk record edit"
+      ]
+    },
+    "T8": {
+      "name": "Integration & automation",
+      "default_flags": [
+        "external-writes"
+      ],
+      "modifiers": [
+        "E",
+        "H"
+      ],
+      "min_effort": "E0",
+      "recipe": "t8_integration",
+      "examples": [
+        "webhook handler",
+        "Meta Ads sync",
+        "n8n workflow writing to Smartsheet",
+        "Sage Intacct export",
+        "cron job"
+      ]
+    },
+    "T9": {
+      "name": "Refactor, behavior-preserving",
+      "default_flags": [],
+      "modifiers": [],
+      "modifiers_by_effort": {
+        "E4": [
+          "G"
+        ]
+      },
+      "min_effort": "E0",
+      "recipe": "t9_refactor",
+      "examples": [
+        "extract module",
+        "rename across packages",
+        "dependency major upgrade",
+        "remove dead code"
+      ]
+    },
+    "T10": {
+      "name": "Research & evidence",
+      "default_flags": [],
+      "modifiers": [],
+      "min_effort": "E0",
+      "recipe": "t10_research",
+      "examples": [
+        "dependency comparison",
+        "how does module X work",
+        "platform capability check",
+        "spike"
+      ]
+    },
+    "T11": {
+      "name": "Security, auth, permissions, secrets",
+      "default_flags": [
+        "critical",
+        "secrets"
+      ],
+      "modifiers": [
+        "G",
+        "H"
+      ],
+      "min_effort": "E0",
+      "recipe": "t11_security",
+      "examples": [
+        "role check",
+        "session handling",
+        "API key handling",
+        "OAuth scope change",
+        "key rotation"
+      ]
+    },
+    "T12": {
+      "name": "Infra, CI, deploy, environment",
+      "default_flags": [],
+      "modifiers": [],
+      "modifiers_by_effort": {
+        "E3": [
+          "G",
+          "H"
+        ],
+        "E4": [
+          "G",
+          "H"
+        ]
+      },
+      "min_effort": "E0",
+      "recipe": "t12_infra",
+      "examples": [
+        "Vercel or Netlify env var",
+        "Railway service config",
+        "GitHub Actions workflow",
+        "build settings"
+      ],
+      "conditional_modifiers": {
+        "H": "flag:prod"
+      }
+    },
+    "T13": {
+      "name": "Architecture & design decision",
+      "default_flags": [
+        "high"
+      ],
+      "modifiers": [],
+      "min_effort": "E3",
+      "recipe": "t13_architecture",
+      "examples": [
+        "service boundary",
+        "data model for a new product",
+        "choosing between two integration designs"
+      ]
+    },
+    "T14": {
+      "name": "Agent, skill & policy engineering",
+      "default_flags": [
+        "high"
+      ],
+      "modifiers": [
+        "V"
+      ],
+      "modifiers_by_effort": {
+        "E3": [
+          "G"
+        ],
+        "E4": [
+          "G"
+        ]
+      },
+      "min_effort": "E0",
+      "recipe": "t14_agent_policy",
+      "examples": [
+        "Hermes skill",
+        "role YAML",
+        "prompt",
+        "this routing policy",
+        "router.py"
+      ]
+    }
+  },
+  "matrix": {
+    "_grammar": "Cell = <family>[+<modifiers>] | ->Tn[|Tm] (re-route to that task type at the same effort; alternatives chosen by signal) | ->reroute (misdescribed request; router returns reroute_required) | ^E1 (raise effort to E1 and look up again). Flag effects (flag_effects) add G and H on top of any cell.",
+    "T1": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "->T9|T5",
+      "E3": "->T9|T5",
+      "E4": "->T13"
+    },
+    "T2": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "R2",
+      "E3": "R3",
+      "E4": "->T13"
+    },
+    "T3": {
+      "E0": "^E1",
+      "E1": "R1+P",
+      "E2": "R2+P",
+      "E3": "R3+P",
+      "E4": "R4+P"
+    },
+    "T4": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "R2",
+      "E3": "R3",
+      "E4": "->T13"
+    },
+    "T5": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "R2",
+      "E3": "R3",
+      "E4": "R4"
+    },
+    "T6": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "R2",
+      "E3": "R3",
+      "E4": "R4"
+    },
+    "T7": {
+      "E0": "R1+GH",
+      "E1": "R1+GH",
+      "E2": "R2+GH",
+      "E3": "R3+GH",
+      "E4": "R4+GH"
+    },
+    "T8": {
+      "E0": "R1+EH",
+      "E1": "R1+EH",
+      "E2": "R2+EH",
+      "E3": "R3+EH",
+      "E4": "R4+EH"
+    },
+    "T9": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "R2",
+      "E3": "R3",
+      "E4": "R4+G"
+    },
+    "T10": {
+      "E0": "RE",
+      "E1": "RE",
+      "E2": "RE",
+      "E3": "RE",
+      "E4": "->T13"
+    },
+    "T11": {
+      "E0": "R1+GH",
+      "E1": "R1+GH",
+      "E2": "R2+GH",
+      "E3": "R3+GH",
+      "E4": "R4+GH"
+    },
+    "T12": {
+      "E0": "R0",
+      "E1": "R1",
+      "E2": "R2",
+      "E3": "R3+GH",
+      "E4": "R4+GH"
+    },
+    "T13": {
+      "E0": "->reroute",
+      "E1": "->reroute",
+      "E2": "->reroute",
+      "E3": "R4",
+      "E4": "R4"
+    },
+    "T14": {
+      "E0": "R0+V",
+      "E1": "R1+V",
+      "E2": "R2+V",
+      "E3": "R3+GV",
+      "E4": "R4+GV"
+    },
+    "_notes": {
+      "T12.E0-E2": "+H arrives through the prod flag (flag_effects), which is what '(+H if prod)' in the spec means.",
+      "T13.E3": "R4 plan head only: the premium judge writes the ADR and decomposition; no implementation in this item.",
+      "T8": "+G arrives through the payments, pii or secrets flag when derived from paths."
+    }
+  },
+  "reroute_choice": {
+    "T9|T5": {
+      "signal": "behavior_preserving",
+      "true": "T9",
+      "false": "T5"
+    }
+  },
+  "flag_effects": {
+    "G": [
+      "critical",
+      "payments",
+      "secrets",
+      "destructive",
+      "pii"
+    ],
+    "H": [
+      "prod",
+      "destructive",
+      "external-writes"
+    ]
+  },
+  "flags_known": [
+    "critical",
+    "high",
+    "payments",
+    "secrets",
+    "destructive",
+    "pii",
+    "prod",
+    "external-writes"
+  ],
+  "modifiers": {
+    "E": {
+      "name": "Evidence first",
+      "adds_node": "EVID",
+      "position": "after ROUTE",
+      "tier": "F",
+      "role": "evidence"
+    },
+    "P": {
+      "name": "Reproduce first",
+      "adds_node": "REPRO",
+      "position": "after ROUTE",
+      "tier": "by_effort",
+      "on_failure": "raise effort one level; if no reproduction within ceiling, stop with evidence"
+    },
+    "G": {
+      "name": "Premium gate",
+      "replaces_node": {
+        "CON": "PCON"
+      },
+      "adds_node": "PACC",
+      "position": "after VER",
+      "tier": "P",
+      "fresh_session": true,
+      "adds_gate_reserve": true
+    },
+    "H": {
+      "name": "Human interrupt",
+      "adds_node": "HUM",
+      "position": "before DEL",
+      "tier": "human",
+      "scope": "exact revision and exact action"
+    },
+    "V": {
+      "name": "Eval replay",
+      "annotates_node": "VER",
+      "requires": "pilot and holdout replay with non-regression on acceptance, cost per accepted item, p95 lead time"
+    }
+  },
+  "route_templates": {
+    "_note": "Live nodes per family. Modifiers add or replace nodes. The item subgraph is TD -> RV, IM -> RV -> CK; families switch TD and RV on or off.",
+    "R0": {
+      "name": "Direct",
+      "contract": "inline",
+      "nodes": [
+        "ROUTE",
+        "IM",
+        "CK",
+        "INT",
+        "VER",
+        "DEL"
+      ],
+      "item_nodes": [
+        "IM",
+        "CK"
+      ],
+      "review": "deterministic_checks_only"
+    },
+    "R1": {
+      "name": "Light",
+      "contract": "short, implementer tier, checked by reviewer (P when +G)",
+      "nodes": [
+        "ROUTE",
+        "CON",
+        "IM",
+        "RV",
+        "CK",
+        "INT",
+        "VER",
+        "DEL"
+      ],
+      "item_nodes": [
+        "IM",
+        "RV",
+        "CK"
+      ],
+      "review": "diff_only_different_family"
+    },
+    "R2": {
+      "name": "Standard",
+      "contract": "M tier (P when +G)",
+      "nodes": [
+        "ROUTE",
+        "CON",
+        "TD",
+        "IM",
+        "RV",
+        "CK",
+        "INT",
+        "VER",
+        "DEL"
+      ],
+      "item_nodes": [
+        "TD",
+        "IM",
+        "RV",
+        "CK"
+      ],
+      "review": "diff_and_source_different_family"
+    },
+    "R3": {
+      "name": "Heavy",
+      "contract": "H tier (P when +G)",
+      "nodes": [
+        "ROUTE",
+        "CON",
+        "TD",
+        "IM",
+        "RV",
+        "CK",
+        "INT",
+        "VER",
+        "DEL"
+      ],
+      "item_nodes": [
+        "TD",
+        "IM",
+        "RV",
+        "CK"
+      ],
+      "review": "diff_source_and_behavioral_evidence_different_family"
+    },
+    "R4": {
+      "name": "Planned",
+      "contract": "P writes milestone contract and decomposition",
+      "nodes": [
+        "ROUTE",
+        "PCON",
+        "SPLIT",
+        "TD",
+        "IM",
+        "RV",
+        "CK",
+        "INT",
+        "VER",
+        "PACC",
+        "DEL"
+      ],
+      "item_nodes": [
+        "TD",
+        "IM",
+        "RV",
+        "CK"
+      ],
+      "review": "per_item_then_premium_acceptance",
+      "forces_modifiers": [
+        "G"
+      ]
+    },
+    "RE": {
+      "name": "Evidence only",
+      "contract": "question and success criterion",
+      "nodes": [
+        "ROUTE",
+        "EVID",
+        "RV",
+        "DEL"
+      ],
+      "item_nodes": [],
+      "review": "second_model_checks_claims_against_sources"
+    }
+  },
+  "node_tiers": {
+    "_note": "Tier per node. 'by_effort:<field>' reads the effort level. Deterministic nodes have no model.",
+    "ROUTE": "rules_then_L_then_coordination",
+    "EVID": "F",
+    "REPRO": "by_effort:implementer_tier",
+    "CON": "by_effort:implementer_tier",
+    "PCON": "P",
+    "SPLIT": "P_decision_controller_mechanics",
+    "TD": "by_effort:test_design_tier",
+    "IM": "by_effort:implementer_tier",
+    "RV": "by_effort:reviewer_tier",
+    "CK": "deterministic",
+    "INT": "deterministic",
+    "VER": "deterministic_plus_F_for_browser_comparison",
+    "FC": "rules_then_L",
+    "PRE": "P",
+    "PACC": "P",
+    "HUM": "human",
+    "DEL": "controller"
+  },
+  "recipes": {
+    "t1_mechanical": [
+      "lint, format, typecheck, build pass",
+      "existing tests pass",
+      "diff confined to owned files",
+      "no behavioral change (AST-level diff, or F-tier reviewer for R1)"
+    ],
+    "t2_bug_repro": [
+      "reproduction test red on base revision, green on candidate",
+      "targeted tests for the touched module",
+      "regression suite for the touched package"
+    ],
+    "t3_bug_no_repro": [
+      "produce a reproduction first (failing test or scripted repro); if none within the +P ceiling, stop with evidence",
+      "then t2_bug_repro",
+      "root-cause statement anchored to file and revision"
+    ],
+    "t4_tests": [
+      "new tests fail when the covered behavior is deliberately broken (mutation spot-check, >=1 assertion per test file)",
+      "tests assert on contract, not implementation details"
+    ],
+    "t5_backend": [
+      "contract tests for every changed interface",
+      "consumers of changed interfaces enumerated and updated or shown unaffected",
+      "independent test design from the contract",
+      "review of diff plus source"
+    ],
+    "t6_frontend": [
+      "build",
+      "real browser run of acceptance scenarios",
+      "screenshots at contract viewports compared to the contract by a vision-capable F/M model",
+      "accessibility check where tooling exists",
+      "snapshot tests alone are not evidence"
+    ],
+    "t7_data_schema": [
+      "dry run against a snapshot or copy",
+      "forward and rollback both executed",
+      "row counts and checksums reconciled before and after",
+      "seeds and backfills idempotent and scoped by explicit filters",
+      "+H before touching any shared environment"
+    ],
+    "t8_integration": [
+      "fixture-payload replay in a sandbox or test account",
+      "idempotency proven: same event twice -> one effect",
+      "retry and rate-limit behavior tested",
+      "external API contract pinned with primary documentation link and retrieval date",
+      "+H before enabling live external writes",
+      "secrets only via environment or broker"
+    ],
+    "t9_refactor": [
+      "existing tests pass unchanged (compile-level fallout only, confirmed by reviewer)",
+      "characterization tests added first where coverage is thin",
+      "public interfaces unchanged unless the contract says so"
+    ],
+    "t10_research": [
+      "evidence bundle: sources with URL, retrieval date, snippet",
+      "each claim tagged PASS / FAIL / NOT YET PROVEN",
+      "at most two competing options",
+      "explicit 'what would change this conclusion'",
+      "no code"
+    ],
+    "t11_security": [
+      "negative tests: unauthorized paths denied",
+      "secret scan of the diff",
+      "no secret value enters model context",
+      "threat sketch for the changed surface",
+      "+G contract and acceptance",
+      "+H before rotation or any production change"
+    ],
+    "t12_infra": [
+      "plan or dry run reviewed (preview deployment, --dry-run, plan output)",
+      "apply",
+      "readback of live state matches intent",
+      "rollback path executed at least once outside production for E2+"
+    ],
+    "t13_architecture": [
+      "ADR: decision, <=2 alternatives, interface/invariant contract, acceptance tests, rollback conditions",
+      "decomposition into items that each land in a matrix cell",
+      "no code in this item"
+    ],
+    "t14_agent_policy": [
+      "eval replay on pilot and holdout: no regression in acceptance rate, cost per accepted item, lead time",
+      "test_router.py passes",
+      "matrix changes reviewed cross-family"
+    ]
+  },
+  "impact_map": [
+    {
+      "pattern": "**/migrations/**",
+      "task_type": "T7",
+      "flags": [
+        "critical",
+        "destructive"
+      ]
+    },
+    {
+      "pattern": "prisma/schema.prisma",
+      "task_type": "T7",
+      "flags": [
+        "critical",
+        "destructive"
+      ]
+    },
+    {
+      "pattern": "**/*.sql",
+      "task_type": "T7",
+      "flags": [
+        "critical",
+        "destructive"
+      ]
+    },
+    {
+      "pattern": "**/seed*",
+      "task_type": "T7",
+      "flags": [
+        "critical",
+        "destructive"
+      ]
+    },
+    {
+      "pattern": "**/auth/**",
+      "task_type": "T11",
+      "flags": [
+        "critical",
+        "secrets"
+      ]
+    },
+    {
+      "pattern": "**/middleware*",
+      "task_type": "T11",
+      "flags": [
+        "critical",
+        "secrets"
+      ]
+    },
+    {
+      "pattern": "**/*permission*",
+      "task_type": "T11",
+      "flags": [
+        "critical",
+        "secrets"
+      ]
+    },
+    {
+      "pattern": "**/*secret*",
+      "task_type": "T11",
+      "flags": [
+        "critical",
+        "secrets"
+      ]
+    },
+    {
+      "pattern": ".env*",
+      "task_type": "T11",
+      "flags": [
+        "critical",
+        "secrets"
+      ]
+    },
+    {
+      "pattern": ".github/workflows/**",
+      "task_type": "T12",
+      "flags": []
+    },
+    {
+      "pattern": "vercel.json",
+      "task_type": "T12",
+      "flags": []
+    },
+    {
+      "pattern": "netlify.toml",
+      "task_type": "T12",
+      "flags": []
+    },
+    {
+      "pattern": "railway.*",
+      "task_type": "T12",
+      "flags": []
+    },
+    {
+      "pattern": "Dockerfile",
+      "task_type": "T12",
+      "flags": []
+    },
+    {
+      "pattern": "**/webhooks/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "n8n/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "**/integrations/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "**/hubspot/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "**/meta/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "**/smartsheet/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "**/intacct/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes"
+      ]
+    },
+    {
+      "pattern": "**/stripe/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes",
+        "payments"
+      ]
+    },
+    {
+      "pattern": "**/paycove/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes",
+        "payments"
+      ]
+    },
+    {
+      "pattern": "**/billing/**",
+      "task_type": "T8",
+      "flags": [
+        "external-writes",
+        "payments"
+      ]
+    },
+    {
+      "pattern": "**/students/**",
+      "task_type": null,
+      "flags": [
+        "pii"
+      ]
+    },
+    {
+      "pattern": "**/contacts/**",
+      "task_type": null,
+      "flags": [
+        "pii"
+      ]
+    },
+    {
+      "pattern": "**/*.test.*",
+      "task_type": "T4",
+      "flags": [],
+      "only_if_all_files_match": true
+    },
+    {
+      "pattern": "**/__tests__/**",
+      "task_type": "T4",
+      "flags": [],
+      "only_if_all_files_match": true
+    },
+    {
+      "pattern": "**/fixtures/**",
+      "task_type": "T4",
+      "flags": [],
+      "only_if_all_files_match": true
+    },
+    {
+      "pattern": "docs/**",
+      "task_type": "T1",
+      "flags": [],
+      "only_if_all_files_match": true
+    },
+    {
+      "pattern": "**/*.md",
+      "task_type": "T1",
+      "flags": [],
+      "only_if_all_files_match": true
+    },
+    {
+      "pattern": "skills/**",
+      "task_type": "T14",
+      "flags": [
+        "high"
+      ]
+    },
+    {
+      "pattern": "**/.hermes/**",
+      "task_type": "T14",
+      "flags": [
+        "high"
+      ]
+    },
+    {
+      "pattern": "**/.hermes.md",
+      "task_type": "T14",
+      "flags": [
+        "high"
+      ]
+    },
+    {
+      "pattern": "bundle/roles/**",
+      "task_type": "T14",
+      "flags": [
+        "high"
+      ]
+    },
+    {
+      "pattern": "policy.json",
+      "task_type": "T14",
+      "flags": [
+        "high"
+      ]
+    },
+    {
+      "pattern": "router.py",
+      "task_type": "T14",
+      "flags": [
+        "high"
+      ]
+    }
+  ],
+  "type_precedence": [
+    "T11",
+    "T7",
+    "T8",
+    "T12",
+    "T14",
+    "T4",
+    "T1"
+  ],
+  "keyword_rules": [
+    {
+      "any": [
+        "typo",
+        "formatting",
+        "format ",
+        "rename",
+        "comment",
+        "docs only"
+      ],
+      "task_type": "T1"
+    },
+    {
+      "any": [
+        "intermittent",
+        "sometimes",
+        "flaky in prod",
+        "no repro",
+        "cannot reproduce",
+        "can't reproduce",
+        "randomly"
+      ],
+      "task_type": "T3"
+    },
+    {
+      "any": [
+        "failing test",
+        "repro steps",
+        "reproduce with",
+        "steps to reproduce",
+        "bug:",
+        "fix bug",
+        "regression"
+      ],
+      "task_type": "T2"
+    },
+    {
+      "any": [
+        "add tests",
+        "test coverage",
+        "fixtures",
+        "flaky test"
+      ],
+      "task_type": "T4"
+    },
+    {
+      "any": [
+        "refactor",
+        "no behavior change",
+        "behavior-preserving",
+        "clean up"
+      ],
+      "task_type": "T9"
+    },
+    {
+      "any": [
+        "research",
+        "compare",
+        "should we",
+        "evaluate",
+        "spike",
+        "how does"
+      ],
+      "task_type": "T10"
+    },
+    {
+      "any": [
+        "architecture",
+        "design decision",
+        "how should we structure",
+        "adr",
+        "service boundary",
+        "data model for"
+      ],
+      "task_type": "T13"
+    },
+    {
+      "any": [
+        "migration",
+        "backfill",
+        "seed",
+        "schema change"
+      ],
+      "task_type": "T7"
+    },
+    {
+      "any": [
+        "webhook",
+        "n8n",
+        "cron",
+        "sync job",
+        "integration"
+      ],
+      "task_type": "T8"
+    },
+    {
+      "any": [
+        "auth",
+        "permission",
+        "role check",
+        "oauth",
+        "api key",
+        "rotate",
+        "secret"
+      ],
+      "task_type": "T11"
+    },
+    {
+      "any": [
+        "deploy",
+        "ci ",
+        "github actions",
+        "env var",
+        "vercel",
+        "netlify",
+        "railway"
+      ],
+      "task_type": "T12"
+    },
+    {
+      "any": [
+        "hermes skill",
+        "prompt",
+        "routing policy",
+        "role yaml"
+      ],
+      "task_type": "T14"
+    },
+    {
+      "any": [
+        "ui",
+        "page",
+        "component",
+        "frontend",
+        "screen",
+        "form"
+      ],
+      "task_type": "T6"
+    },
+    {
+      "any": [
+        "endpoint",
+        "api",
+        "backend",
+        "service",
+        "job",
+        "query"
+      ],
+      "task_type": "T5"
+    }
+  ],
+  "failure_classes": {
+    "F1": {
+      "name": "Environment",
+      "edge": "ITEM",
+      "counts_candidate": false,
+      "charged_to": "overhead",
+      "max_per_item": 1,
+      "after_max": "STOP",
+      "examples": [
+        "flaky test",
+        "sandbox or dependency problem",
+        "transport error",
+        "rate limit"
+      ]
+    },
+    "F2": {
+      "name": "Contract defect",
+      "edge": "CON",
+      "counts_candidate": "only_if_implementation_also_wrong",
+      "charged_to": "item",
+      "examples": [
+        "implementer reports ambiguity",
+        "tests and criteria contradict",
+        "test designer and reviewer disagree on intent"
+      ]
+    },
+    "F3": {
+      "name": "Implementation shortfall",
+      "edge": "ESCALATE_ITEM",
+      "counts_candidate": true,
+      "charged_to": "item",
+      "after": {
+        "2": "PRE_once",
+        "3": "STOP"
+      },
+      "examples": [
+        "tests red",
+        "blocking review findings",
+        "recipe fails"
+      ]
+    },
+    "F4": {
+      "name": "Integration collision",
+      "edge": "SPLIT",
+      "counts_candidate": false,
+      "charged_to": "milestone",
+      "consumes_milestone_replan": true,
+      "examples": [
+        "merge conflicts",
+        "cross-item breakage after integration"
+      ]
+    },
+    "F5": {
+      "name": "External blocker",
+      "edge": "STOP",
+      "counts_candidate": false,
+      "charged_to": null,
+      "examples": [
+        "permission missing",
+        "provider outage",
+        "third party down",
+        "funds or time exhausted"
+      ]
+    }
+  },
+  "decomposition_rules": {
+    "D1": "One owner per item.",
+    "D2": "Concurrent items own disjoint files. Shared collision points (schemas, lockfiles, migrations, routing tables, generated clients) become their own items, serialized on the critical path.",
+    "D3": "Every item has a testable acceptance criterion inherited from the milestone contract.",
+    "D4": "Target E1-E2 per item. An item that cannot be brought under E3 is a T13 question, not an item.",
+    "D5": "Items are similar in size: the longest is at most twice the median.",
+    "D6": "Items under a +G parent carry contract.inherited_gate_ref; diverging assumptions need a new gate. Fragmenting work to evade the gate is a logged policy violation."
+  },
+  "reservation": {
+    "verification_recovery_fraction": 0.35,
+    "predispatch_check": "spent + in_flight_reservations + next_call_upper_bound <= effective_limit",
+    "effective_limit": "min(task_ceiling, project_remaining, daily_remaining)",
+    "retain_reservations_for_unknown_billing": true
+  },
+  "gate_reserve_model": {
+    "_note": "Gate reserve = max(static gate_reserve_usd, computed). Computed = 2 premium calls at the expected context for the effort level, times safety_factor.",
+    "expected_context_tokens": {
+      "E0": {
+        "in": 30000,
+        "out": 5000
+      },
+      "E1": {
+        "in": 30000,
+        "out": 5000
+      },
+      "E2": {
+        "in": 60000,
+        "out": 8000
+      },
+      "E3": {
+        "in": 120000,
+        "out": 12000
+      },
+      "E4": {
+        "in": 150000,
+        "out": 15000
+      }
+    },
+    "calls": 2,
+    "safety_factor": 1.5
+  },
+  "tiers": {
+    "L": {
+      "name": "Local",
+      "candidates": [
+        "local-qwen-coder"
+      ],
+      "roles": {
+        "implementer": "local-qwen-coder",
+        "classifier": "local-qwen-coder",
+        "summarizer": "local-qwen-coder"
+      },
+      "alternate_tier": "F",
+      "width_cap": 2,
+      "profile": "eng-local"
+    },
+    "F": {
+      "name": "Flash",
+      "candidates": [
+        "qwen-coder-flash",
+        "qwen3.8-27b",
+        "glm-5.3-flash",
+        "gemini-3.8-flash",
+        "grok-4.6"
+      ],
+      "roles": {
+        "implementer": "qwen3.8-27b",
+        "test_design": "glm-5.3-flash",
+        "evidence": "gemini-3.8-flash",
+        "vision": "gemini-3.8-flash",
+        "reviewer": "different_family"
+      },
+      "profile": "eng-flash"
+    },
+    "M": {
+      "name": "Mid",
+      "candidates": [
+        "glm-5.3",
+        "qwen3.8-27b",
+        "grok-4.6",
+        "kimi-k2.7-code"
+      ],
+      "roles": {
+        "implementer": "glm-5.3",
+        "test_design": "glm-5.3",
+        "reviewer": "different_family"
+      },
+      "profile": "eng-mid"
+    },
+    "H": {
+      "name": "High",
+      "candidates": [
+        "claude-sonnet-5",
+        "gpt-5.6-sol"
+      ],
+      "coordination": "gpt-5.6-sol",
+      "roles": {
+        "implementer": "claude-sonnet-5",
+        "test_design": "gpt-5.6-sol",
+        "reviewer": "different_family",
+        "coordination": "gpt-5.6-sol"
+      },
+      "profile": "eng-high",
+      "coordination_dispatch": {
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "reasoning_effort": "high"
+      }
+    },
+    "P": {
+      "name": "Premium judge",
+      "candidates": [
+        "gpt-6-astra"
+      ],
+      "roles": {
+        "judge": "gpt-6-astra"
+      },
+      "alternate": "claude-opus-5",
+      "alternate_note": "Declared cross-family alternate at price parity today; placeholder for your decision. Never substituted silently.",
+      "log_substitution": true,
+      "silent_substitution": false,
+      "profile": "eng-judge"
+    }
+  },
+  "profiles": {
+    "eng-local": {
+      "tier": "L"
+    },
+    "eng-flash": {
+      "tier": "F"
+    },
+    "eng-mid": {
+      "tier": "M"
+    },
+    "eng-high": {
+      "tier": "H"
+    },
+    "eng-judge": {
+      "tier": "P"
+    },
+    "eng-reviewer": {
+      "tier": "by_node",
+      "note": "pinned per card to a different family than the implementer"
+    },
+    "eng-integrator": {
+      "tier": null,
+      "note": "deterministic; a model only on conflicts"
+    }
+  },
+  "registry": {
+    "_note": "Prices USD per 1M tokens. checked_at and verified come from the v2 review on 2026-09-08; rows with verified=false are carried from v1. usage_fields and reasoning_controls are illustrative until _confirm is cleared against the provider's API reference. key_ref is a reference to where the key lives, never a key.",
+    "local-qwen-coder": {
+      "provider": "ollama",
+      "family": "qwen",
+      "tier": "L",
+      "enabled": true,
+      "price": {
+        "input": 0.0,
+        "cached_input": 0.0,
+        "output": 0.0,
+        "context_band": "local",
+        "processing": "local",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "local hardware; $0 marginal, machine time counted in the ledger"
+      },
+      "usage_fields": {
+        "input": "prompt_eval_count",
+        "output": "eval_count",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": null
+      },
+      "tool_schema": {
+        "parallel_tool_calls": false,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "concurrency": 2
+      },
+      "cache": {
+        "mode": "none"
+      },
+      "key_ref": null,
+      "hermes": {
+        "provider": "ollama",
+        "model": "<the qwen/glm coder model you have pulled>"
+      }
+    },
+    "qwen-coder-flash": {
+      "provider": "alibaba",
+      "family": "qwen",
+      "tier": "F",
+      "enabled": true,
+      "price": {
+        "input": 0.144,
+        "cached_input": null,
+        "output": 0.574,
+        "context_band": "<=32K",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": false,
+        "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+        "note": "carried from v1; prices rise at larger context tiers; Global deployment is not US-only processing"
+      },
+      "usage_fields": {
+        "input": "usage.prompt_tokens",
+        "cached_input": "usage.prompt_tokens_details.cached_tokens",
+        "output": "usage.completion_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": null,
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "unknown",
+        "_confirm": true
+      },
+      "key_ref": "env:DASHSCOPE_API_KEY",
+      "hermes": {
+        "provider": "alibaba",
+        "model": "qwen-coder-flash"
+      }
+    },
+    "glm-5.3-flash": {
+      "provider": "zai",
+      "family": "glm",
+      "tier": "F",
+      "enabled": true,
+      "price": {
+        "input": 0.15,
+        "cached_input": 0.03,
+        "output": 0.5,
+        "context_band": "standard",
+        "processing": "list",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://docs.z.ai/guides/overview/pricing",
+        "note": "50% promotion ends 2026-09-09 24:00 UTC+8; list rate used"
+      },
+      "usage_fields": {
+        "input": "usage.prompt_tokens",
+        "cached_input": "usage.prompt_tokens_details.cached_tokens",
+        "output": "usage.completion_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "thinking.type",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "automatic_prefix",
+        "storage": "free (limited time)"
+      },
+      "key_ref": "env:ZAI_API_KEY",
+      "hermes": {
+        "provider": "zai",
+        "model": "glm-5.3-flash"
+      }
+    },
+    "gemini-3.8-flash": {
+      "provider": "google",
+      "family": "gemini",
+      "tier": "F",
+      "enabled": true,
+      "price": {
+        "input": 0.75,
+        "cached_input": 0.075,
+        "output": 3.75,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://ai.google.dev/gemini-api/docs/pricing",
+        "note": "through 2026-12-31; doubles 2027-01-01. Batch 50% off. Search grounding: 5,000 requests/month included, then $14 per 1,000",
+        "scheduled_change": {
+          "effective": "2027-01-01",
+          "input": 1.5,
+          "cached_input": 0.15,
+          "output": 7.5
+        }
+      },
+      "usage_fields": {
+        "input": "usageMetadata.promptTokenCount",
+        "cached_input": "usageMetadata.cachedContentTokenCount",
+        "output": "usageMetadata.candidatesTokenCount",
+        "reasoning": "usageMetadata.thoughtsTokenCount",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "generationConfig.thinkingConfig",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "grounding": "google_search",
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "explicit_and_implicit",
+        "_confirm": true
+      },
+      "key_ref": "env:GEMINI_API_KEY",
+      "hermes": {
+        "provider": "google",
+        "model": "gemini-3.8-flash"
+      },
+      "openrouter_slug": "google/gemini-3.8-flash"
+    },
+    "grok-4.6": {
+      "provider": "xai",
+      "family": "grok",
+      "tier": "F",
+      "enabled": true,
+      "price": {
+        "input": 2.0,
+        "cached_input": 0.5,
+        "output": 6.0,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-10-16",
+        "verified": false,
+        "source": "https://openrouter.ai/x-ai/grok-4.6 (via openrouter.ai/api/v1/models)",
+        "note": "USD per million tokens; web search is USD per 1,000 searches. OpenRouter metadata verified 2026-10-16; these are OpenRouter rates used as planning reference values, not verified direct xAI prices. Direct xAI dispatch/account binding is preserved; verify direct xAI rates before spending.",
+        "source_provider": "openrouter",
+        "openrouter_verified": true,
+        "direct_xai_verified": false,
+        "web_search_usd_per_1000": 5.0
+      },
+      "usage_fields": {
+        "input": "usage.prompt_tokens",
+        "output": "usage.completion_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": null,
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "search": "paid",
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "unknown",
+        "_confirm": true
+      },
+      "key_ref": "env:XAI_API_KEY",
+      "hermes": {
+        "provider": "xai",
+        "model": "grok-4.6"
+      },
+      "openrouter_slug": "x-ai/grok-4.6",
+      "context_length": 500000,
+      "openrouter_metadata": {
+        "canonical_slug": "x-ai/grok-4.6-20260810",
+        "created": "2026-08-12",
+        "checked_at": "2026-10-16"
+      },
+      "availability_checks": {
+        "checked_at": "2026-10-16",
+        "source": "Local Hermes one-shot smoke tests against OpenRouter and direct xAI",
+        "openrouter": {
+          "model": "x-ai/grok-4.6",
+          "one_shot_success": true
+        },
+        "xai": {
+          "model": "grok-4.6",
+          "one_shot_success": true
+        }
+      }
+    },
+    "kimi-k2.7-code": {
+      "provider": "moonshot",
+      "family": "kimi",
+      "tier": "M",
+      "enabled": true,
+      "price": {
+        "input": 0.95,
+        "cached_input": 0.19,
+        "output": 4.0,
+        "context_band": "262K",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://www.kimi.ai/resources/kimi-k2-7-code-pricing",
+        "note": "high-speed variant is 2x"
+      },
+      "usage_fields": {
+        "input": "usage.prompt_tokens",
+        "cached_input": "usage.cached_tokens",
+        "output": "usage.completion_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": null,
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "automatic_prefix",
+        "_confirm": true
+      },
+      "key_ref": "env:MOONSHOT_API_KEY",
+      "hermes": {
+        "provider": "moonshot",
+        "model": "kimi-k2.7-code"
+      }
+    },
+    "glm-5.3": {
+      "provider": "zai",
+      "family": "glm",
+      "tier": "M",
+      "enabled": true,
+      "price": {
+        "input": 1.4,
+        "cached_input": 0.26,
+        "output": 4.4,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://docs.z.ai/guides/overview/pricing"
+      },
+      "usage_fields": {
+        "input": "usage.prompt_tokens",
+        "cached_input": "usage.prompt_tokens_details.cached_tokens",
+        "output": "usage.completion_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "thinking.type",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "automatic_prefix",
+        "storage": "free (limited time)"
+      },
+      "key_ref": "env:ZAI_API_KEY",
+      "hermes": {
+        "provider": "zai",
+        "model": "glm-5.3"
+      }
+    },
+    "claude-sonnet-5": {
+      "provider": "anthropic",
+      "family": "claude",
+      "tier": "H",
+      "enabled": true,
+      "price": {
+        "input": 2.0,
+        "cached_input": 0.2,
+        "output": 10.0,
+        "cache_write_5m": 2.5,
+        "cache_write_1h": 4.0,
+        "context_band": "standard (full context at standard pricing)",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://platform.claude.com/docs/en/about-claude/pricing"
+      },
+      "usage_fields": {
+        "input": "usage.input_tokens",
+        "cached_input": "usage.cache_read_input_tokens",
+        "cache_write": "usage.cache_creation_input_tokens",
+        "output": "usage.output_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "thinking",
+        "note": "adaptive thinking per provider docs",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "explicit_breakpoints",
+        "ttl": "5m or 1h"
+      },
+      "key_ref": "env:ANTHROPIC_API_KEY",
+      "hermes": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      },
+      "openrouter_slug": "anthropic/claude-sonnet-5"
+    },
+    "gpt-5.6-sol": {
+      "provider": "openai-codex",
+      "family": "gpt",
+      "tier": "H",
+      "enabled": true,
+      "price": {
+        "input": 2.0,
+        "cached_input": 0.2,
+        "output": 10.0,
+        "context_band": "short",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://developers.openai.com/api/docs/pricing",
+        "note": "v1 listed $4.00/$20.00 (2x). Long context $4.00/$15.00",
+        "long_context_price": {
+          "input": 4.0,
+          "cached_input": 0.4,
+          "output": 15.0
+        }
+      },
+      "usage_fields": {
+        "input": "usage.input_tokens",
+        "cached_input": "usage.input_tokens_details.cached_tokens",
+        "output": "usage.output_tokens",
+        "reasoning": "usage.output_tokens_details.reasoning_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "reasoning.effort",
+        "_confirm": true,
+        "default": "high"
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "strict": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "automatic_prefix"
+      },
+      "hermes": {
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "auth_mode": "chatgpt",
+      "subscription_accounting_note": "Historical API price metadata is preserved for deterministic planning controls only; it is not ChatGPT subscription billing or verified availability."
+    },
+    "gpt-6-astra": {
+      "provider": "openai",
+      "family": "gpt",
+      "tier": "P",
+      "enabled": true,
+      "price": {
+        "input": 5.0,
+        "cached_input": 0.5,
+        "output": 25.0,
+        "context_band": "short",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://developers.openai.com/api/docs/pricing",
+        "note": "v1 listed $10.00/$50.00 (2x). Long context $10.00/$37.50",
+        "long_context_price": {
+          "input": 10.0,
+          "cached_input": 1.0,
+          "output": 37.5
+        }
+      },
+      "usage_fields": {
+        "input": "usage.input_tokens",
+        "cached_input": "usage.input_tokens_details.cached_tokens",
+        "output": "usage.output_tokens",
+        "reasoning": "usage.output_tokens_details.reasoning_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "reasoning.effort",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "strict": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "automatic_prefix"
+      },
+      "key_ref": "env:OPENAI_API_KEY",
+      "hermes": {
+        "provider": "openai",
+        "model": "gpt-6-astra"
+      },
+      "openrouter_slug": "openai/gpt-6-astra"
+    },
+    "claude-opus-5": {
+      "provider": "anthropic",
+      "family": "claude",
+      "tier": "P",
+      "enabled": false,
+      "price": {
+        "input": 5.0,
+        "cached_input": 0.5,
+        "output": 25.0,
+        "cache_write_5m": 6.25,
+        "cache_write_1h": 10.0,
+        "context_band": "standard (full context at standard pricing)",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+        "note": "declared premium alternate; enable after your decision"
+      },
+      "usage_fields": {
+        "input": "usage.input_tokens",
+        "cached_input": "usage.cache_read_input_tokens",
+        "cache_write": "usage.cache_creation_input_tokens",
+        "output": "usage.output_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "thinking",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "explicit_breakpoints",
+        "ttl": "5m or 1h"
+      },
+      "key_ref": "env:ANTHROPIC_API_KEY",
+      "hermes": {
+        "provider": "anthropic",
+        "model": "claude-opus-5"
+      },
+      "openrouter_slug": "anthropic/claude-opus-5"
+    },
+    "deepseek-v4-flash": {
+      "provider": "openrouter",
+      "family": "deepseek",
+      "tier": "F",
+      "enabled": "open-source, verified on OpenRouter",
+      "price": {
+        "input": 0.089,
+        "cached_input": null,
+        "output": 0.177,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/deepseek-v4-flash (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "deepseek/deepseek-v4-flash"
+      },
+      "openrouter_slug": "deepseek/deepseek-v4-flash"
+    },
+    "deepseek-v4-pro": {
+      "provider": "openrouter",
+      "family": "deepseek",
+      "tier": "M",
+      "enabled": "open-source, verified on OpenRouter",
+      "price": {
+        "input": 0.955,
+        "cached_input": null,
+        "output": 1.911,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/deepseek-v4-pro (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "deepseek/deepseek-v4-pro"
+      },
+      "openrouter_slug": "deepseek/deepseek-v4-pro"
+    },
+    "qwen3.8-27b": {
+      "provider": "openrouter",
+      "family": "qwen",
+      "tier": "F",
+      "enabled": "open-source, verified on OpenRouter",
+      "price": {
+        "input": 0.42,
+        "cached_input": null,
+        "output": 3.0,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/qwen3.8-27b (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "qwen/qwen3.8-27b"
+      },
+      "openrouter_slug": "qwen/qwen3.8-27b"
+    },
+    "glm-4.7": {
+      "provider": "openrouter",
+      "family": "glm",
+      "tier": "M",
+      "enabled": "open-source, verified on OpenRouter",
+      "price": {
+        "input": 0.4,
+        "cached_input": null,
+        "output": 1.75,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/glm-4.7 (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "z-ai/glm-4.7"
+      },
+      "openrouter_slug": "z-ai/glm-4.7"
+    },
+    "gpt-oss-120b": {
+      "provider": "openrouter",
+      "family": "gpt",
+      "tier": "F",
+      "enabled": "open-source, verified on OpenRouter",
+      "price": {
+        "input": 0.037,
+        "cached_input": null,
+        "output": 0.17,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/gpt-oss-120b (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "openai/gpt-oss-120b"
+      },
+      "openrouter_slug": "openai/gpt-oss-120b"
+    },
+    "claude-opus-4.8": {
+      "provider": "openrouter",
+      "family": "claude",
+      "tier": "H",
+      "enabled": "frontier, verified on OpenRouter",
+      "price": {
+        "input": 5.0,
+        "cached_input": null,
+        "output": 25.0,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/claude-opus-4.8 (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "anthropic/claude-opus-4.8"
+      },
+      "openrouter_slug": "anthropic/claude-opus-4.8"
+    },
+    "claude-fable-5.1": {
+      "provider": "openrouter",
+      "family": "claude",
+      "tier": "P",
+      "enabled": "premium, verified on OpenRouter",
+      "price": {
+        "input": 10.0,
+        "cached_input": null,
+        "output": 50.0,
+        "context_band": "standard",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "source": "https://openrouter.ai/models/claude-fable-5.1 (via openrouter.ai/api/v1/models)",
+        "verified": true,
+        "_confirm": "pricing re-checked 2026-09-08 via openrouter.ai/api/v1/models"
+      },
+      "usage_fields": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "reasoning_controls": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "tool_schema": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "rate_limits": {
+        "_confirm": "fill from OpenRouter account"
+      },
+      "cache": {
+        "_confirm": "verify against OpenRouter API reference before first dispatch"
+      },
+      "key_ref": "env:OPENROUTER_API_KEY",
+      "hermes": {
+        "provider": "openrouter",
+        "model": "anthropic/claude-fable-5.1"
+      },
+      "openrouter_slug": "anthropic/claude-fable-5.1"
+    }
+  },
+  "scheduling": {
+    "order": "longest_remaining_path",
+    "batch_premium_acceptance_per_milestone": true,
+    "registry_max_age_days": 30,
+    "default_width_cap": 4,
+    "max_reviewers_concurrent": 2,
+    "local_width_cap": 2,
+    "pipeline_review": true,
+    "evidence_during_planning": true,
+    "node_duration_min": {
+      "_note": "Planning estimates for critical-path ordering only; replaced by measured p50 per cell from the event log.",
+      "ROUTE": 1,
+      "EVID": 10,
+      "PCON": 20,
+      "SPLIT": 5,
+      "PACC": 15,
+      "PRE": 20,
+      "HUM": 0,
+      "DEL": 1,
+      "REPRO": {
+        "E0": 5,
+        "E1": 10,
+        "E2": 20,
+        "E3": 40,
+        "E4": 40
+      },
+      "CON": {
+        "E0": 0,
+        "E1": 3,
+        "E2": 10,
+        "E3": 20,
+        "E4": 45
+      },
+      "TD": {
+        "E0": 0,
+        "E1": 5,
+        "E2": 20,
+        "E3": 40,
+        "E4": 40
+      },
+      "IM": {
+        "E0": 3,
+        "E1": 10,
+        "E2": 45,
+        "E3": 150,
+        "E4": 150
+      },
+      "RV": {
+        "E0": 0,
+        "E1": 5,
+        "E2": 15,
+        "E3": 30,
+        "E4": 30
+      },
+      "CK": {
+        "E0": 2,
+        "E1": 5,
+        "E2": 10,
+        "E3": 20,
+        "E4": 20
+      },
+      "INT": {
+        "E0": 1,
+        "E1": 2,
+        "E2": 5,
+        "E3": 10,
+        "E4": 10
+      },
+      "VER": {
+        "E0": 2,
+        "E1": 5,
+        "E2": 15,
+        "E3": 30,
+        "E4": 30
+      }
+    }
+  },
+  "evaluation": {
+    "pilot_tasks": "30-50 representative tasks split by task type and effort, including known bugs and realistic integration failures",
+    "baselines": [
+      "single-agent claude-sonnet-5",
+      "single-agent gpt-5.6-sol",
+      "gpt-6-astra alone on the hardest/critical subset"
+    ],
+    "metrics": [
+      "acceptance_rate",
+      "escaped_defects",
+      "cost_per_accepted_item_usd",
+      "lead_time_p50_min",
+      "lead_time_p95_min",
+      "repair_attempts",
+      "human_rework_min"
+    ],
+    "per_cell_promotion": {
+      "min_accepted_items": 10,
+      "acceptance_not_below_current": true,
+      "escaped_defects_in_window": 0
+    },
+    "per_cell_demotion": {
+      "escaped_defects": 2,
+      "or_acceptance_below_floor": true
+    },
+    "policy_change_is": "T14 with eval replay on pilot and holdout"
+  },
+  "modes": {
+    "_note": "Operating modes (SPEC §0): RIGOR levels, not model rosters. A mode may only raise rigor, width, budget/time ceilings or gates when the task type/impact flags require it; it never removes a mandatory recipe, premium gate, human interrupt, secret rule, idempotency rule or verification requirement. Model selection is fully decoupled from the mode: every tier is filled from the tier registry and dispatched on the model's own provider account. User-selected mode is a floor, not a ceiling (router may raise, never lower). Safety flags win over mode (rule 6).",
+    "default": "easy",
+    "easy": {
+      "name": "Easy",
+      "rank": 0,
+      "use_when": "Routine team workflows, cron jobs, simple setup, and tasks where the safe default is obvious.",
+      "override_behavior": "Use the least expensive verified route; prefer human-readable schedules, default delivery, narrow prompts, one owner, and no optional advanced knobs. Route E0-E1 work through R0/R1 unless task type/flags require more.",
+      "minimum_proof": "Artifact exists; relevant check/readback passes; cron/job/profile/skill loads successfully when applicable."
+    },
+    "medium": {
+      "name": "Medium",
+      "rank": 1,
+      "use_when": "Normal product/engineering changes where several files or an external contract may be involved.",
+      "override_behavior": "Default to the matrix as written. Use independent test design and cross-family review for E2. Cap parallelism at disjoint owned-file sets, default width 4.",
+      "minimum_proof": "Contract plus targeted or independent tests; reviewer sees diff/source, not the implementer report; verification recipe passes on exact revision."
+    },
+    "hard": {
+      "name": "Hard",
+      "rank": 2,
+      "use_when": "Cross-module, high-risk, ambiguous, production-adjacent, or failure-prone work.",
+      "override_behavior": "Raise effort one level when uncertainty is material; require explicit contract, stronger reviewer, evidence bundle when useful, and stricter time/spend checkpoints. Use R3 or R4 when E3+ or when decomposition reduces risk.",
+      "minimum_proof": "Integration/failure-injection checks where relevant; blocking findings resolved; state/event log records attempts, failures, gates, and exact revision."
+    },
+    "expert": {
+      "name": "Expert",
+      "rank": 3,
+      "use_when": "Foundational architecture, security/data/schema, policy/routing changes, irreversible external writes, or anything the operator flags as expert.",
+      "override_behavior": "Treat as T13/T14 or critical row as appropriate. Use premium judge for contract/acceptance where flags or matrix require +G; use human interrupt +H before irreversible actions. Decompose into E1-E2 bounded items under one approved milestone contract.",
+      "minimum_proof": "Premium/human gates satisfied when required; holdout/eval replay for policy changes; readback/proof from external systems; ledger and final artifact reconcile."
+    }
+  },
+  "modes_changelog": {
+    "2.2.0": "Pool/roster availability modes removed (user decision, 2026-09-08). Old pools preserved here for rollback reference only; the router no longer reads 'pools'.",
+    "removed_pool_definitions": {
+      "easy": {
+        "name": "Easy",
+        "description": "Open-source models through OpenRouter only. No local tier, no closed or premium models.",
+        "provider": "openrouter",
+        "roles": {
+          "coordination": "qwen3.8-27b",
+          "judge": null
+        },
+        "judge_fallback": "top of the H pool; declared substitution",
+        "pools": {
+          "L": [
+            "gpt-oss-120b",
+            "deepseek-v4-flash"
+          ],
+          "F": [
+            "deepseek-v4-flash",
+            "qwen3.8-27b",
+            "gpt-oss-120b"
+          ],
+          "M": [
+            "deepseek-v4-pro",
+            "qwen3.8-27b",
+            "glm-4.7"
+          ],
+          "H": [
+            "deepseek-v4-pro",
+            "glm-4.7"
+          ],
+          "P": []
+        },
+        "openrouter_slugs": {
+          "deepseek-v4-flash": "deepseek/deepseek-v4-flash",
+          "deepseek-v4-pro": "deepseek/deepseek-v4-pro",
+          "qwen3.8-27b": "qwen/qwen3.8-27b",
+          "glm-4.7": "z-ai/glm-4.7",
+          "gpt-oss-120b": "openai/gpt-oss-120b",
+          "claude-opus-4.8": "anthropic/claude-opus-4.8",
+          "claude-fable-5.1": "anthropic/claude-fable-5.1"
+        }
+      },
+      "medium": {
+        "name": "Medium",
+        "description": "Grok drives: coordination, planning, research and the declared premium substitute; workers are open-source models through OpenRouter only.",
+        "provider": "openrouter",
+        "roles": {
+          "coordination": "grok-4.6",
+          "judge": "grok-4.6"
+        },
+        "judge_fallback": "none (grok-4.6 is the declared judge for this mode)",
+        "pools": {
+          "L": [
+            "gpt-oss-120b",
+            "deepseek-v4-flash"
+          ],
+          "F": [
+            "deepseek-v4-flash",
+            "qwen3.8-27b",
+            "gpt-oss-120b"
+          ],
+          "M": [
+            "deepseek-v4-pro",
+            "qwen3.8-27b",
+            "glm-4.7"
+          ],
+          "H": [
+            "deepseek-v4-pro",
+            "glm-4.7",
+            "grok-4.6"
+          ],
+          "P": [
+            "grok-4.6"
+          ]
+        },
+        "openrouter_slugs": {
+          "deepseek-v4-flash": "deepseek/deepseek-v4-flash",
+          "deepseek-v4-pro": "deepseek/deepseek-v4-pro",
+          "qwen3.8-27b": "qwen/qwen3.8-27b",
+          "glm-4.7": "z-ai/glm-4.7",
+          "gpt-oss-120b": "openai/gpt-oss-120b",
+          "claude-opus-4.8": "anthropic/claude-opus-4.8",
+          "claude-fable-5.1": "anthropic/claude-fable-5.1",
+          "grok-4.6": "x-ai/grok-4.6"
+        }
+      },
+      "hard": {
+        "name": "Hard",
+        "description": "Opus 4.8, GPT-5.6 Sol and Grok 4.6 with open-source models, through OpenRouter only.",
+        "provider": "openrouter",
+        "roles": {
+          "coordination": "gpt-5.6-terra",
+          "judge": "claude-opus-4.8",
+          "judge_alternate": "gpt-5.6-sol"
+        },
+        "pools": {
+          "L": [
+            "gpt-oss-120b",
+            "deepseek-v4-flash"
+          ],
+          "F": [
+            "deepseek-v4-flash",
+            "qwen3.8-27b",
+            "gpt-oss-120b"
+          ],
+          "M": [
+            "deepseek-v4-pro",
+            "qwen3.8-27b",
+            "glm-4.7"
+          ],
+          "H": [
+            "claude-opus-4.8",
+            "gpt-5.6-sol",
+            "grok-4.6"
+          ],
+          "P": [
+            "claude-opus-4.8",
+            "gpt-5.6-sol"
+          ]
+        },
+        "openrouter_slugs": {
+          "deepseek-v4-flash": "deepseek/deepseek-v4-flash",
+          "deepseek-v4-pro": "deepseek/deepseek-v4-pro",
+          "qwen3.8-27b": "qwen/qwen3.8-27b",
+          "glm-4.7": "z-ai/glm-4.7",
+          "gpt-oss-120b": "openai/gpt-oss-120b",
+          "claude-opus-4.8": "anthropic/claude-opus-4.8",
+          "claude-fable-5.1": "anthropic/claude-fable-5.1",
+          "grok-4.6": "x-ai/grok-4.6",
+          "gpt-5.6-sol": "openai/gpt-5.6-sol",
+          "gpt-5.6-terra": "openai/gpt-5.6-terra"
+        }
+      },
+      "expert": {
+        "name": "Expert",
+        "description": "All models: the full v2 registry, direct providers, including Fable 5.1 and Astra.",
+        "provider": null,
+        "roles": {
+          "coordination": "gpt-5.6-terra",
+          "judge": "gpt-6-astra",
+          "judge_alternates": [
+            "claude-opus-5",
+            "claude-fable-5.1"
+          ]
+        },
+        "pools": {
+          "L": [
+            "local-qwen-coder"
+          ],
+          "F": [
+            "qwen-coder-flash",
+            "glm-5.3-flash",
+            "gemini-3.8-flash"
+          ],
+          "M": [
+            "kimi-k2.7-code",
+            "glm-5.3"
+          ],
+          "H": [
+            "claude-sonnet-5",
+            "gpt-5.6-sol"
+          ],
+          "P": [
+            "gpt-6-astra",
+            "claude-fable-5.1"
+          ]
+        },
+        "openrouter_slugs": {}
+      }
+    },
+    "removed_default": "expert"
+  },
+  "historical_registry": {
+    "gpt-5.6-terra": {
+      "provider": "openai",
+      "family": "gpt",
+      "tier": "H",
+      "role": "coordination",
+      "enabled": true,
+      "price": {
+        "input": 1.0,
+        "cached_input": 0.1,
+        "output": 6.0,
+        "context_band": "short",
+        "processing": "standard",
+        "checked_at": "2026-09-08",
+        "verified": true,
+        "source": "https://developers.openai.com/api/docs/pricing",
+        "note": "v1 listed $2.00/$12.00 (2x; consistent with Priority tier). Long context $2.00/$9.00",
+        "long_context_price": {
+          "input": 2.0,
+          "cached_input": 0.2,
+          "output": 9.0
+        }
+      },
+      "usage_fields": {
+        "input": "usage.input_tokens",
+        "cached_input": "usage.input_tokens_details.cached_tokens",
+        "output": "usage.output_tokens",
+        "reasoning": "usage.output_tokens_details.reasoning_tokens",
+        "_confirm": true
+      },
+      "reasoning_controls": {
+        "param": "reasoning.effort",
+        "_confirm": true
+      },
+      "tool_schema": {
+        "parallel_tool_calls": true,
+        "strict": true,
+        "_confirm": true
+      },
+      "rate_limits": {
+        "rpm": null,
+        "tpm": null
+      },
+      "cache": {
+        "mode": "automatic_prefix"
+      },
+      "key_ref": "env:OPENAI_API_KEY",
+      "hermes": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      },
+      "openrouter_slug": "openai/gpt-5.6-terra"
+    }
+  }
+}

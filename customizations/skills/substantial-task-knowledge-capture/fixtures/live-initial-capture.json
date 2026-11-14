@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "task_id": "substantial-task-capture-pipeline-v1",
+  "substantial": true,
+  "classification": "internal-non-personal",
+  "title": "Build substantial task knowledge capture pipeline",
+  "source": {
+    "session_id": "20260906_223831_a768b6",
+    "message_id": 204894,
+    "started_at": "2026-09-07T03:38:31.906620Z",
+    "completed_at": "2026-09-07T03:41:52.700255Z",
+    "summary": "Build and execute a deterministic substantial-task outcome capture pipeline for the governed Obsidian knowledge graph."
+  },
+  "decisions": [
+    {
+      "decision": "Use explicit curated manifests and a standalone profile-local script",
+      "rationale": "Preserve outcome provenance without altering Hermes core or copying transcripts and hidden reasoning"
+    },
+    {
+      "decision": "Fail closed on identity collisions, graph tampering, unsafe paths, and unverified results",
+      "rationale": "Make idempotency and privacy controls deterministic and auditable"
+    }
+  ],
+  "artifacts": [
+    {"path": "/Users/operator/.hermes/scripts/obsidian_knowledge_capture.py", "description": "Capture pipeline CLI"},
+    {"path": "/Users/operator/.hermes/scripts/test_obsidian_knowledge_capture.py", "description": "Nine-test deterministic security and E2E suite"},
+    {"path": "/Users/operator/.hermes/skills/productivity/substantial-task-knowledge-capture/SKILL.md", "description": "Operating contract and usage skill"},
+    {"path": "/Users/operator/.hermes/skills/productivity/substantial-task-knowledge-capture/evidence/e2e-smoke-results.json", "description": "Preserved isolated-vault smoke receipt"}
+  ],
+  "result": "The capture pipeline passed nine tests and an isolated dry-run, first-write, and idempotent-replay smoke sequence.",
+  "reusable_lesson": "Capture only curated verified outcomes; bind stable source identity to content hashes and fail closed when identity or graph content diverges.",
+  "entities": [
+    {"name": "Hermes Agent", "kind": "system"},
+    {"name": "Obsidian", "kind": "system"}
+  ],
+  "verification": {
+    "status": "passed",
+    "method": "Executed unittest suite and preserved isolated-vault CLI smoke",
+    "evidence": "9/9 tests passed; smoke statuses were planned with 0 writes, captured with 5 writes, and already_present with 0 writes."
+  }
+}

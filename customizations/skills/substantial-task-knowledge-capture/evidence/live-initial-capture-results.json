@@ -1,0 +1,21 @@
+{
+  "suite": "controlled-live-initial-capture",
+  "vault": "/Users/operator/Documents/Obsidian Vault",
+  "state": "/Users/operator/.hermes/scripts/obsidian_knowledge_capture.state.json",
+  "capture_id": "substantial-task-capture-pipeline-v1-2f0d71ca1f77",
+  "manifest_sha256": "b149f0fa7b9b69f226d71a3f4a0d4dc53e696821a86808d4f4d6c559bc06f3f4",
+  "results": [
+    {"step": "dry-run", "status": "planned", "writes": 0, "exit_code": 0},
+    {"step": "initial-capture", "status": "captured", "writes": 5, "exit_code": 0},
+    {"step": "idempotent-replay", "status": "already_present", "writes": 0, "exit_code": 0},
+    {"step": "post-hardening-replay", "status": "already_present", "writes": 0, "exit_code": 0}
+  ],
+  "receipt": "/Users/operator/Documents/Obsidian Vault/Compiled Knowledge/output/task-capture-receipts/2026-09-07-substantial-task-capture-pipeline-v1-2f0d71ca1f77.md",
+  "files": {
+    "Compiled Knowledge/concepts/task-captures/build-substantial-task-knowledge-capture-pipelin-2f0d71ca1f77.md": "9f6dfcb2c8d647bf2526d21a23728bb49437f9a64e0eebedf51cbc6e14b4262a",
+    "Compiled Knowledge/entities/capture-references/substantial-task-capture-pipeline-v1-2f0d71ca1f77-hermes-agent.md": "e24b6e58cd3e6d50e3f2082c4cfd997fe1ed0faef5c3a3d5f6bec336dd565cc8",
+    "Compiled Knowledge/entities/capture-references/substantial-task-capture-pipeline-v1-2f0d71ca1f77-obsidian.md": "684994a4b5040b051310c5cb12748ac841225f66aa2db3b701ea8c4062d0e08f",
+    "Compiled Knowledge/output/task-capture-receipts/2026-09-07-substantial-task-capture-pipeline-v1-2f0d71ca1f77.md": "9351620526f67112dd789eeaf93b289c07088482866a3dec661cfd08007f108c",
+    "Compiled Knowledge/raw/tasks/2026/2026-09-07/substantial-task-capture-pipeline-v1-2f0d71ca1f77.md": "cf483b6edc1ccff84755c6c3fdb3c7643ff8977dd098d24fc1be259596922149"
+  }
+}

@@ -1,0 +1,350 @@
+{
+  "skills": [
+    {
+      "skill": "agent-orchestrator",
+      "source_category": ".",
+      "files": 3,
+      "bytes": 46020,
+      "sha256": "2935883442d3884ef3fd030dd87725dcf091615aae18adee148ee83a4cee4d1d"
+    },
+    {
+      "skill": "engineering-swarm",
+      "source_category": "autonomous-ai-agents",
+      "files": 16,
+      "bytes": 700770,
+      "sha256": "262421222dd48c2aa58a717e129010a0b98acbe5e686b0ba33f90e102292d309"
+    },
+    {
+      "skill": "engineering-swarm-local-execution",
+      "source_category": ".",
+      "files": 2,
+      "bytes": 25357,
+      "sha256": "0819e612916ab3dc5b68f29d9c7f2d75b51adf1b4e932855e4c5db0936da2d83"
+    },
+    {
+      "skill": "recursive-engineering-swarm",
+      "source_category": "autonomous-ai-agents",
+      "files": 4,
+      "bytes": 117079,
+      "sha256": "9d6e98b18c61356c301de927ecc14c5130212bffb65fffcd573a16b6a42676fe"
+    },
+    {
+      "skill": "multi-agent-evidence-controls",
+      "source_category": "autonomous-ai-agents",
+      "files": 2,
+      "bytes": 47451,
+      "sha256": "82fec398a68495e2c31e132179daba69992cd02c71b1e0efa235e1302d95af5e"
+    },
+    {
+      "skill": "multi-model-agent-routing",
+      "source_category": "autonomous-ai-agents",
+      "files": 7,
+      "bytes": 52525,
+      "sha256": "d89d35594af25994cb6edce754f6d534a0a9c0d3fcee33009d07dfd4291ff09d"
+    },
+    {
+      "skill": "openrouter-agent-fleet",
+      "source_category": "autonomous-ai-agents",
+      "files": 3,
+      "bytes": 300850,
+      "sha256": "aef6f2aeeaad67db0c1df82993b0490a3996db2e166fcf3e49d0316980d16248"
+    },
+    {
+      "skill": "merge-reconciler",
+      "source_category": "autonomous-ai-agents",
+      "files": 1,
+      "bytes": 7606,
+      "sha256": "24ffd1be973b0e884876fe0db9f49783fffe6a2337a4e74a83cdd895cb6fce23"
+    },
+    {
+      "skill": "agent-merge-conflict-arbiter",
+      "source_category": "autonomous-ai-agents",
+      "files": 1,
+      "bytes": 7629,
+      "sha256": "f8b1a0cf2392a1da0d3890e1ebc6429b1edb83a8f076e104b8f7c8cb7465d1be"
+    },
+    {
+      "skill": "kanban-codex-lane",
+      "source_category": "autonomous-ai-agents",
+      "files": 2,
+      "bytes": 14982,
+      "sha256": "f5072f5ecdb548aa5656e7219aa4d7ff8d3272425cf7b574f22473a5fed558b1"
+    },
+    {
+      "skill": "claude-code",
+      "source_category": "autonomous-ai-agents",
+      "files": 1,
+      "bytes": 49858,
+      "sha256": "b4ffe8df0469eebfa474046a88d9836e2c2d6583a07b3c28fd5f58b64a1f4403"
+    },
+    {
+      "skill": "codex",
+      "source_category": "autonomous-ai-agents",
+      "files": 1,
+      "bytes": 14110,
+      "sha256": "97dd4dc1d44ec74577ff4023fe3a13737147455ce6309d79e2ca3e26b435c90c"
+    },
+    {
+      "skill": "grok",
+      "source_category": "autonomous-ai-agents",
+      "files": 1,
+      "bytes": 13874,
+      "sha256": "51623f5627eb62c739497f158267f6192c952a2ba73c6ed4591856561f3b207b"
+    },
+    {
+      "skill": "grok-collaboration",
+      "source_category": "autonomous-ai-agents",
+      "files": 1,
+      "bytes": 5656,
+      "sha256": "15458d61a703e6fb277cb61640dfe36f9061f3b157f3ab7dbc3d988b5c9ca5d0"
+    },
+    {
+      "skill": "grok-daisy-chain",
+      "source_category": ".",
+      "files": 3,
+      "bytes": 10401,
+      "sha256": "5fdc455a8310376c6fc34e04cf02923e5a3af7c29556496b038224a4e7fd3772"
+    },
+    {
+      "skill": "telegram-bot-fleet-management",
+      "source_category": "autonomous-ai-agents",
+      "files": 5,
+      "bytes": 28456,
+      "sha256": "1719a145e5d33e7ddfd963dbb4e48822b97f33a95366837c4b5068a82725849a"
+    },
+    {
+      "skill": "kanban-orchestrator",
+      "source_category": "devops",
+      "files": 3,
+      "bytes": 28050,
+      "sha256": "73418bab6e1ef75d6430f7507a46f265e8325922073bbaebc01545d43f3aac19"
+    },
+    {
+      "skill": "kanban-worker",
+      "source_category": "devops",
+      "files": 1,
+      "bytes": 12518,
+      "sha256": "1f96b7f66e76c833bffc04660ee6ae5a363ec7e869fab8e55695a6d6f417ff25"
+    },
+    {
+      "skill": "cross-profile-skill-propagation",
+      "source_category": "devops",
+      "files": 1,
+      "bytes": 11793,
+      "sha256": "b51446469d67ec4989f52aeaff0b4038101549784c7fcc36fded9792b28e8b43"
+    },
+    {
+      "skill": "hermes-profile-skill-sync",
+      "source_category": "devops",
+      "files": 1,
+      "bytes": 5307,
+      "sha256": "567ee1ff0598545140a707c042e5da708a8f9e9d2c297ab2318e01e1d05db677"
+    },
+    {
+      "skill": "shared-repository-fleet-management",
+      "source_category": "devops",
+      "files": 2,
+      "bytes": 9385,
+      "sha256": "189a072f87d2ecb12e77f7870e3627f32c71322fab5b1cbba0a73b6c2e559200"
+    },
+    {
+      "skill": "local-terminal-process-monitoring",
+      "source_category": "devops",
+      "files": 5,
+      "bytes": 34500,
+      "sha256": "a5d8d0b648bdd07c8a80842f9ae5a2471f254c4aefc51a2bec4f721bf402c29a"
+    },
+    {
+      "skill": "network-egress-diagnostics",
+      "source_category": "devops",
+      "files": 1,
+      "bytes": 4434,
+      "sha256": "b1723b09bd09845bc8bead1bdd4952a1e7b2228fc4148d80b1949a239e7a417d"
+    },
+    {
+      "skill": "scripted-cron-verification",
+      "source_category": "devops",
+      "files": 1,
+      "bytes": 9001,
+      "sha256": "b56ffeac2a5aeedeb1d9e68f33c4b0c963f5269c7ebacd831c287c65cf7616b1"
+    },
+    {
+      "skill": "webhook-subscriptions",
+      "source_category": "devops",
+      "files": 1,
+      "bytes": 6836,
+      "sha256": "dfb4ddad9b7911dbbd72d33029c33235c39e2af5947fd35738094752eaed64a8"
+    },
+    {
+      "skill": "subagent-driven-development",
+      "source_category": "software-development",
+      "files": 3,
+      "bytes": 24989,
+      "sha256": "5056b5024deb7b9b0c7dd18c870ccb71a2f1de4d05012062bbb440268ef79dd8"
+    },
+    {
+      "skill": "ai-agent-complexity-ratchet",
+      "source_category": "software-development",
+      "files": 1,
+      "bytes": 7580,
+      "sha256": "d7e5d3a2dd9b498a31e599fc000a00c2f15d96eed317e8d83c351d407c5db35e"
+    },
+    {
+      "skill": "hermes-agent-skill-authoring",
+      "source_category": "software-development",
+      "files": 1,
+      "bytes": 15605,
+      "sha256": "77812a03ca76f7dab9feac0fd29e99da7aea89539444a6ee01f51ef15fa596f9"
+    },
+    {
+      "skill": "hermes-update-troubleshooting",
+      "source_category": "software-development",
+      "files": 1,
+      "bytes": 28047,
+      "sha256": "1c8fd6385cbe86121a8ce5bca43c891865131c849722d13e83f695cd732fa0c1"
+    },
+    {
+      "skill": "inspecting-hermes-desktop-dom",
+      "source_category": "software-development",
+      "files": 1,
+      "bytes": 9787,
+      "sha256": "34b72a9bdacfa1cf1b60255d044dfc0402cbad231602b4a0d555cad787059cd5"
+    },
+    {
+      "skill": "debugging-hermes-tui-commands",
+      "source_category": "software-development",
+      "files": 1,
+      "bytes": 7910,
+      "sha256": "55d5811c0b2d872dc59d87432720a113150dbbce2872524a36b3860a8967095d"
+    },
+    {
+      "skill": "hermes-brain-backup",
+      "source_category": ".",
+      "files": 1,
+      "bytes": 5518,
+      "sha256": "a36ed688e88f30763a03af6ae15c8c094193c73fa26956842ac786b7b1124870"
+    },
+    {
+      "skill": "memory-engineering-pipeline",
+      "source_category": "productivity",
+      "files": 2,
+      "bytes": 11582,
+      "sha256": "cee5b09d45e3402b8c97c16334b898578e1f8bf9f281752f9446043c6fc531ee"
+    },
+    {
+      "skill": "memory-mirror-to-obsidian",
+      "source_category": "productivity",
+      "files": 1,
+      "bytes": 8304,
+      "sha256": "0ea9f6065020d67707d947b2ea7d58f4bd3ef9cbfeece1b2aecf896872032f74"
+    },
+    {
+      "skill": "session-librarian",
+      "source_category": "productivity",
+      "files": 1,
+      "bytes": 8038,
+      "sha256": "0cfb9c77c09c21ab7d9defd472bbef3a6c925bc9c323b5c0ef99084f475a0a2a"
+    },
+    {
+      "skill": "governed-self-improvement-loop",
+      "source_category": "productivity",
+      "files": 2,
+      "bytes": 7462,
+      "sha256": "892a5f7775d26fe6a7881f3d13c7fcc28d07553fa65710406591d5cae6b4647a"
+    },
+    {
+      "skill": "substantial-task-knowledge-capture",
+      "source_category": "productivity",
+      "files": 13,
+      "bytes": 25718,
+      "sha256": "c56f3e3256c75438eba4203bcf6e82985325a34ae21ddec7766db78a9b5267d7"
+    },
+    {
+      "skill": "security-finding-remediation",
+      "source_category": ".",
+      "files": 4,
+      "bytes": 15975,
+      "sha256": "3667043909d8b8d7e2d5e5ba7644cbd84b0b1f6d7fb8cc66365851b193663893"
+    },
+    {
+      "skill": "browser-automation-hardening",
+      "source_category": "security",
+      "files": 4,
+      "bytes": 28746,
+      "sha256": "1897bc278bb04360838558f1da891c9e336cd2282a0d8729b4d7ead8497ee21d"
+    },
+    {
+      "skill": "github-repository-security-hardening",
+      "source_category": "security",
+      "files": 4,
+      "bytes": 35332,
+      "sha256": "45e4b5bc8900a8f9dc5b72fe3a33aea9d96bc37ee816c6da85cb7e465e980da1"
+    },
+    {
+      "skill": "macos-security-audit",
+      "source_category": "security",
+      "files": 6,
+      "bytes": 57631,
+      "sha256": "d157ea7429fa8bc90c67c979b562e3737c1499b8c9648770dba7dffcb97e981c"
+    },
+    {
+      "skill": "repository-disclosure-governance",
+      "source_category": "security",
+      "files": 5,
+      "bytes": 20494,
+      "sha256": "7f3ce7dbf06bb012048786be962813d985796921cfd0651ab5c4070998b2e185"
+    },
+    {
+      "skill": "vulnerability-wire-monitoring",
+      "source_category": ".",
+      "files": 1,
+      "bytes": 5601,
+      "sha256": "26adbc080e5e87f40be83c4c9a2394ae97bfd7ad523f6c2a47f45e7a5fcd6c98"
+    },
+    {
+      "skill": "mcp-connection-triage",
+      "source_category": "mcp",
+      "files": 1,
+      "bytes": 7159,
+      "sha256": "1f2ec83ecca8fe06f3a2a3d4b6d0b15cb5327b327dd7776d9698e248947e643e"
+    },
+    {
+      "skill": "native-mcp",
+      "source_category": "mcp",
+      "files": 1,
+      "bytes": 22775,
+      "sha256": "42e6a5af847e0e7eeacb4a2f2a35164c9151f0c26a734af8058ae9131b089e98"
+    },
+    {
+      "skill": "alert-driven-remediation-operations",
+      "source_category": "operations",
+      "files": 2,
+      "bytes": 9546,
+      "sha256": "8e44d149518c4a8847233dc73894c7e24b922bdae6ffeba7accef62d2e0bd8f9"
+    },
+    {
+      "skill": "artifact-provenance-search",
+      "source_category": ".",
+      "files": 2,
+      "bytes": 18714,
+      "sha256": "4b02ab2d322de2cb7bec4b4abd5efc953866d7f45d7a6a21a6d576f75039cb74"
+    },
+    {
+      "skill": "system-of-record-reconciliation",
+      "source_category": ".",
+      "files": 3,
+      "bytes": 16898,
+      "sha256": "825350df897424f509187be529ac0899f491e5f093d8c09b60afdca9d89ad01e"
+    },
+    {
+      "skill": "profile-fleet-build-chains",
+      "source_category": ".",
+      "files": 2,
+      "bytes": 14920,
+      "sha256": "c98ccfb92411edc8072eb10fb57c6919cd96f70f5e222543f48b6fe809dbefeb"
+    }
+  ],
+  "total_skills": 49,
+  "total_files": 132,
+  "total_bytes": 1978779
+}

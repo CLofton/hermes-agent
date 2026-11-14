@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "task_id": "stable-task-id",
+  "substantial": true,
+  "classification": "internal-non-personal",
+  "title": "Concise completed task title",
+  "source": {
+    "session_id": "Hermes session ID",
+    "message_id": 123,
+    "started_at": "2026-09-07T03:00:00Z",
+    "completed_at": "2026-09-07T03:15:00Z",
+    "summary": "Curated task request or source summary; never a transcript."
+  },
+  "decisions": [
+    {
+      "decision": "What was decided",
+      "rationale": "Why, without hidden reasoning"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/absolute/or/repository-relative/path",
+      "description": "What the artifact is"
+    }
+  ],
+  "result": "Verified outcome",
+  "reusable_lesson": "Durable procedure or constraint",
+  "entities": [
+    {
+      "name": "System or project name",
+      "kind": "system"
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "method": "Exact check performed",
+    "evidence": "Concise observed result"
+  }
+}
